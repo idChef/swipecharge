@@ -1,10 +1,19 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
 import LoginButton from "../components/auth/LoginButton";
+import useSWR from "swr";
+import { useSession } from "next-auth/react";
+import type { Group } from "@prisma/client";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+    const { data: session } = useSession();
+
+    const { data: groups } = useSWR<Group[]>(
+        session?.user?.id && `/api/groups/${session?.user?.id}`
+    );
+
     return (
         <>
             <Head>
@@ -20,6 +29,13 @@ export default function Home() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main className="flex flex-col gap-4 justify-center items-center h-screen w-full">
+                <div className="border">
+                    {groups?.map((group) => (
+                        <div key={group.id} className="p-2">
+                            {group.name}
+                        </div>
+                    ))}
+                </div>
                 <LoginButton />
             </main>
         </>

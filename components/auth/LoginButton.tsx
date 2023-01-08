@@ -5,7 +5,7 @@ export default function LoginButton() {
     if (session && session.user) {
         return (
             <>
-                Signed in as {session.user.email} <br />
+                Signed in as {session.user.name} <br />
                 <button
                     className="border rounded px-4 py-2"
                     onClick={() => signOut()}
