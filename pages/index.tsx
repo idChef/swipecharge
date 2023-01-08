@@ -4,6 +4,7 @@ import LoginButton from "../components/auth/LoginButton";
 import useSWR from "swr";
 import { useSession } from "next-auth/react";
 import type { Group } from "@prisma/client";
+import { Header } from "components/common/header/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,16 +29,8 @@ export default function Home() {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className="flex flex-col gap-4 justify-center items-center h-screen w-full">
-                <div className="border">
-                    {groups?.map((group) => (
-                        <div key={group.id} className="p-2">
-                            {group.name}
-                        </div>
-                    ))}
-                </div>
-                <LoginButton />
-            </main>
+            <Header heading="Dashboard" />
+            <LoginButton />
         </>
     );
 }
