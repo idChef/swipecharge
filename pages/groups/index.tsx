@@ -16,22 +16,24 @@ const Groups: FunctionComponent = ({}) => {
 
     return (
         <div className="flex flex-col gap-6">
-            <Header heading="Groups">
-                <div className="ml-auto bg-black rounded-full w-8 h-8 flex items-center justify-center opacity-60">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6 stroke-white"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 4.5v15m7.5-7.5h-15"
-                        />
-                    </svg>
+            <Header heading="Groups" showBack={false}>
+                <div className="ml-auto bg-black rounded-full w-8 h-8 flex items-center justify-center absolute right-4 hover:bg-gray-500 transition-all">
+                    <Link href="/groups/create">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6 stroke-white"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                        </svg>
+                    </Link>
                 </div>
             </Header>
             {/* <CaptionedSection caption="invites">

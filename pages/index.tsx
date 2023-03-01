@@ -29,7 +29,7 @@ export default function Home() {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Header heading="Dashboard" />
+            <Header heading="Dashboard" showBack={false} />
             <LoginButton />
         </>
     );
