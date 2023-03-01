@@ -68,9 +68,10 @@ model UsersOnGroups {
 }
 
 model Group {
-  id        String          @id @default(cuid())
-  name      String
-  users     UsersOnGroups[]
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id         String          @id @default(cuid())
+  name       String
+  users      UsersOnGroups[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  inviteLink String          @unique
 }

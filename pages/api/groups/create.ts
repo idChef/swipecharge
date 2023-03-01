@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { NextApiRequest, NextApiResponse } from "next";
 import client from "prisma/prismaclient";
 
@@ -12,15 +13,20 @@ export default async function handler(
 ) {
     const { groupName, userId } = req.body as CreateGroupRequest;
 
+    const inviteLink = nanoid(); // generate a unique invite link
+
+    console.log(inviteLink);
+
     try {
         const group = await client.group.create({
             data: {
                 name: groupName,
                 users: {
                     create: {
-                        userId: userId,
+                        userId,
                     },
                 },
+                inviteLink, // add the invite link to the group data
             },
             include: {
                 users: true,
