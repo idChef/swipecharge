@@ -3,9 +3,9 @@ import { CaptionedSection } from "components/common/captionedSection/CaptionedSe
 import { Header } from "components/common/header/Header";
 import { GroupCard } from "components/groups/groupCard/GroupCard";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { FunctionComponent } from "react";
 import useSWR from "swr";
-
 
 const Groups: FunctionComponent = ({}) => {
     const { data: session } = useSession();
@@ -47,7 +47,9 @@ const Groups: FunctionComponent = ({}) => {
             >
                 <div className="flex flex-col gap-4">
                     {groups?.map((group) => (
-                        <GroupCard key={group.id} name={group.name} />
+                        <Link key={group.id} href={`groups/${group.id}`}>
+                            <GroupCard name={group.name} />
+                        </Link>
                     ))}
                 </div>
             </CaptionedSection>
