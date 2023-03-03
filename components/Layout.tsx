@@ -7,7 +7,7 @@ interface LayoutProps {
 
 const Layout: FunctionComponent<LayoutProps> = ({ children }) => {
     return (
-        <div className="px-4 py-4">
+        <div className="px-4 py-4 bg-neutral-50 dark:bg-neutral-700 h-full">
             <Navigation />
             {children}
         </div>
