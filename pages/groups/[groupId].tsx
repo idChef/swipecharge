@@ -1,4 +1,5 @@
-import { Expense, Group, User, UsersOnGroups } from "@prisma/client";
+import { Activity, Group, User, UsersOnGroups } from "@prisma/client";
+import { ActivityCard } from "components/activity/ActivityCard";
 import { CaptionedSection } from "components/common/captionedSection/CaptionedSection";
 import { Header } from "components/common/header/Header";
 import { useSession } from "next-auth/react";
@@ -11,7 +12,7 @@ import { copyToClipboard } from "utils/clipboard";
 type GroupProps = {};
 
 type GroupWithExpenseAndUsers = Group & {
-    Expense: Expense[];
+    Activity: Activity[];
     users: (UsersOnGroups & {
         user: User;
     })[];
@@ -117,21 +118,12 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                         </div>
                     ))}
             </div>
-            <div className="border-t border-gray-400 my-4"></div>
-            <CaptionedSection caption="Activity" >
+            <div className="my-4 border-t border-gray-400"></div>
+            <CaptionedSection caption="Activity">
                 <div className="mt-4 flex flex-col gap-2">
-                    {group.Expense &&
-                        group.Expense.map((expense) => (
-                            <div key={expense.id}>
-                                <div className="flex items-center justify-between rounded-sm bg-black px-4 py-2 dark:bg-white">
-                                    <div className="flex w-full items-center justify-between">
-                                        <p>{expense.title}</p>
-                                        <p className="text-lg font-medium text-gray-900">
-                                            {expense.amount}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                    {group.Activity &&
+                        group.Activity.map((activity) => (
+                            <ActivityCard key={activity.id} activity={activity} />
                         ))}
                 </div>
             </CaptionedSection>

@@ -16,7 +16,11 @@ export default async function handler(
             id: groupId,
         },
         include: {
-            Expense: true,
+            Activity: {
+                orderBy: {
+                    createdAt: "desc",
+                },
+            },
             users: {
                 include: {
                     user: true,

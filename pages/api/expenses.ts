@@ -15,10 +15,11 @@ export default async function handler(
     const { title, amount, userId, groupId } = req.body as CreateExpenseRequest;
 
     try {
-        const expense = await client.expense.create({
+        const expense = await client.activity.create({
             data: {
                 title,
                 amount: +amount,
+                type: "expense",
                 group: {
                     connect: {
                         id: groupId,
