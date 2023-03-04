@@ -1,5 +1,5 @@
 import { Header } from "components/common/header/Header";
-import { Field, Form, Formik, useFormikContext } from "formik";
+import { Field, Form, Formik } from "formik";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FunctionComponent } from "react";
@@ -9,7 +9,6 @@ type CreateProps = {};
 const Create: FunctionComponent<CreateProps> = ({}) => {
     const { data: session } = useSession();
     const router = useRouter();
-    const formik = useFormikContext();
 
     return (
         <div>
@@ -52,7 +51,7 @@ const Create: FunctionComponent<CreateProps> = ({}) => {
                         <div>
                             <label
                                 htmlFor="groupName"
-                                className="mb-2 block text-sm font-medium text-gray-900"
+                                className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                             >
                                 Group name
                             </label>

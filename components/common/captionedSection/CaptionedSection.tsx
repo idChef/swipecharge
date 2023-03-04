@@ -14,7 +14,7 @@ export const CaptionedSection: FunctionComponent<CaptionedSectionProps> = ({
     return (
         <div>
             <div className="flex items-center mb-4">
-                <h2 className="uppercase font-bold text-neutral-400 text-sm tracking-wider">
+                <h2 className="uppercase font-bold text-neutral-400 text-sm tracking-wider dark:text-gray-100">
                     {caption}
                 </h2>
                 {captionChildren}

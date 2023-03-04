@@ -15,26 +15,15 @@ export default async function handler(
         where: {
             id: groupId,
         },
-    });
-
-    const usersInGroup = await client.user.findMany({
-        where: {
-            groups: {
-                some: {
-                    group: {
-                        id: groupId,
-                    },
+        include: {
+            Expense: true,
+            users: {
+                include: {
+                    user: true,
                 },
             },
         },
     });
 
-    const groupAndUsers = {
-        ...result,
-        users: usersInGroup,
-    };
-
-    console.log(groupAndUsers);
-
-    res.status(200).json(groupAndUsers);
+    res.status(200).json(result);
 }
