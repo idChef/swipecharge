@@ -2,18 +2,16 @@ import Head from "next/head";
 import { Inter } from "@next/font/google";
 import LoginButton from "../components/auth/LoginButton";
 import useSWR from "swr";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import type { Group } from "@prisma/client";
 import { Header } from "components/common/header/Header";
+import { GetServerSideProps } from "next";
+import { NextRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
     const { data: session } = useSession();
-
-    const { data: groups } = useSWR<Group[]>(
-        session?.user?.id && `/api/groups/${session?.user?.id}`
-    );
 
     return (
         <>
@@ -34,3 +32,22 @@ export default function Home() {
         </>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    // Check if user session is available
+    const session = await getSession(context);
+    const route = context.resolvedUrl as unknown as NextRouter;
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: `/login`,
+                permanent: false,
+            },
+        };
+    }
+
+    return {
+        props: {},
+    };
+};
