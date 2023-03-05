@@ -50,6 +50,7 @@ model User {
   sessions      Session[]
   groups        UsersOnGroups[]
   expenses      Activity[]
+  Bill          Bill[]
 }
 
 model VerificationToken {
@@ -93,8 +94,24 @@ model Activity {
   userId     String
   createdAt  DateTime @default(now())
   groupId    String
-  categoryId String
+  categoryId String?
+  isSplit    Boolean  @default(false)
 
-  group Group @relation(fields: [groupId], references: [id])
-  user  User  @relation(fields: [userId], references: [id])
+  group Group  @relation(fields: [groupId], references: [id])
+  user  User   @relation(fields: [userId], references: [id])
+  Bill  Bill[]
+}
+
+model Bill {
+  id              String   @id @default(cuid())
+  amount          Float?
+  isPaid          Boolean  @default(false)
+  hasParticipated Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  activityId      String
+  userId          String
+
+  activity Activity @relation(fields: [activityId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
 }

@@ -13,14 +13,14 @@ const Layout: FunctionComponent<LayoutProps> = ({ children }) => {
 
     if (EXCLUDED_ROUTES.includes(router.pathname)) {
         return (
-            <div className="h-full bg-neutral-50 px-4 py-4 dark:bg-neutral-900">
+            <div className="h-full bg-neutral-50 px-4 py-4 dark:bg-neutral-900 overflow-auto">
                 {children}
             </div>
         );
     }
 
     return (
-        <div className="h-full bg-neutral-50 px-4 py-4 pb-24 dark:bg-neutral-900">
+        <div className="h-full bg-neutral-50 px-4 py-4 pb-24 dark:bg-neutral-900 overflow-auto">
             <Navigation />
             {children}
         </div>
