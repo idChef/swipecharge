@@ -12,8 +12,8 @@ export default function App({
         <SWRConfig
             value={{
                 // refreshInterval: 3000,
-                fetcher: (resource, init) =>
-                    fetch(resource, init).then((res) => res.json()),
+                fetcher: (url, options) =>
+                    fetch(url, options).then((res) => res.json()),
             }}
         >
             <SessionProvider session={session}>

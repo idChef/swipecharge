@@ -34,8 +34,6 @@ export default async function handler(
 
         const amountPerPerson = activity.amount / peopleInActivityBill;
 
-        console.log(amountPerPerson);
-
         await client.bill.create({
             data: {
                 activity: {

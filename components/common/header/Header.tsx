@@ -38,7 +38,7 @@ export const Header: FunctionComponent<HeaderProps> = ({
                     </svg>
                 </button>
             )}
-            <h2 className="font-bold text-2xl dark:text-white">{heading}</h2>
+            <h2 className="font-medium text-2xl dark:text-white">{heading}</h2>
             {children}
         </div>
     );

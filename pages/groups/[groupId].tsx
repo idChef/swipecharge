@@ -1,29 +1,38 @@
-import { Activity, Group, User, UsersOnGroups } from "@prisma/client";
-import { ActivityCard } from "components/activity/ActivityCard";
-import { CaptionedSection } from "components/common/captionedSection/CaptionedSection";
 import { Header } from "components/common/header/Header";
+import { Tabs } from "components/common/Tabs/Tabs";
+import { ActivityTab } from "components/groups/ActivityTab";
+import { SplitTab } from "components/groups/SplitTab";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import useSWR, { mutate } from "swr";
+import { GroupWithExpenseAndUsers } from "types/groups";
 import { copyToClipboard } from "utils/clipboard";
 
 type GroupProps = {};
 
-type GroupWithExpenseAndUsers = Group & {
-    Activity: Activity[];
-    users: (UsersOnGroups & {
-        user: User;
-    })[];
-};
+const groupTabs = [
+    {
+        name: "Activity",
+        component: <ActivityTab />,
+    },
+    {
+        name: "Split",
+        component: <SplitTab />,
+    },
+    {
+        name: "Settlements",
+        component: <div className="dark:text-white">Not yet implemented</div>,
+    },
+];
 
 const Group: FunctionComponent<GroupProps> = ({}) => {
     const router = useRouter();
     const { groupId } = router.query;
     const { data: session } = useSession();
     const { data: group } = useSWR<GroupWithExpenseAndUsers>(
-        `/api/group/${groupId}`
+        `/api/group/${groupId}/activity`
     );
 
     if (!group) {
@@ -118,15 +127,8 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                         </div>
                     ))}
             </div>
-            <div className="my-4 border-t border-gray-400"></div>
-            <CaptionedSection caption="Activity">
-                <div className="mt-4 flex flex-col gap-2">
-                    {group.Activity &&
-                        group.Activity.map((activity) => (
-                            <ActivityCard key={activity.id} activity={activity} />
-                        ))}
-                </div>
-            </CaptionedSection>
+
+            <Tabs tabs={groupTabs} />
         </>
     );
 };

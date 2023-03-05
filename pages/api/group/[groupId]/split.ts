@@ -5,10 +5,14 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { groupId } = req.query;
+    const { groupId, userId } = req.query;
 
     if (!(typeof groupId === "string")) {
-        return;
+        return res.status(400).json({ error: "Invalid groupId." });
+    }
+
+    if (!(typeof userId === "string")) {
+        return res.status(400).json({ error: "Invalid userId." });
     }
 
     const result = await client.group.findUnique({
@@ -19,6 +23,17 @@ export default async function handler(
             Activity: {
                 orderBy: {
                     createdAt: "desc",
+                },
+                include: {
+                    Bill: {
+                        where: {
+                            userId: userId,
+                        },
+                    },
+                    user: true,
+                },
+                where: {
+                    isSplit: true,
                 },
             },
             users: {

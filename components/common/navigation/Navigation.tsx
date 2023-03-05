@@ -27,7 +27,7 @@ const ROUTES = [
     },
     {
         name: "Profile",
-        path: "/profile/me",
+        path: "/profile",
         icon: <UserIcon className="stroke-2" />,
     },
     {
