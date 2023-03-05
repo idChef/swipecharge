@@ -6,13 +6,16 @@ type CreateExpenseRequest = {
     amount: number;
     userId: string;
     groupId: string;
+    categoryId: string;
+    isSplit: boolean;
 };
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { title, amount, userId, groupId } = req.body as CreateExpenseRequest;
+    const { title, amount, userId, groupId, categoryId, isSplit } =
+        req.body as CreateExpenseRequest;
 
     try {
         const expense = await client.activity.create({
@@ -20,6 +23,8 @@ export default async function handler(
                 title,
                 amount: +amount,
                 type: "expense",
+                categoryId,
+                isSplit: isSplit,
                 group: {
                     connect: {
                         id: groupId,

@@ -4,11 +4,18 @@ import { getSession, useSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { NextRouter } from "next/router";
 import Image from "next/image";
+import useSWR from "swr";
+import { Skeleton } from "components/common/Skeleton/Skeleton";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
     const { data: session } = useSession();
+
+    const { data, isLoading } = useSWR(
+        `/api/activities/swipe/remaining?userId=${session?.user?.id}`
+    );
 
     return (
         <>
@@ -34,13 +41,43 @@ export default function Home() {
                     </h1>
                 </div>
                 <div className="relative h-10 w-10 overflow-hidden rounded-full">
-                    <Image
-                        src={session?.user.image || ""}
-                        alt={session?.user.name || ""}
-                        fill
-                    />
+                    {session && (
+                        <Image
+                            src={session?.user.image || ""}
+                            alt={session?.user.name || ""}
+                            fill
+                        />
+                    )}
                 </div>
             </div>
+            {isLoading ? (
+                <Skeleton className="mt-4 h-20 w-full" />
+            ) : (
+                <Link href="/activities/swipe" draggable="false">
+                    <div className="mt-4 flex cursor-pointer items-center rounded-md px-4 py-4 text-white dark:bg-white dark:text-black">
+                        <div className="flex flex-col">
+                            <span className="text-lg font-medium">
+                                Activities
+                            </span>
+                            {data?.length} left to settle
+                        </div>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            className="ml-auto h-8 w-8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                            />
+                        </svg>
+                    </div>
+                </Link>
+            )}
         </>
     );
 }

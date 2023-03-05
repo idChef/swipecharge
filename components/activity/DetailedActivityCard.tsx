@@ -1,26 +1,27 @@
-import { Activity } from "@prisma/client";
-import { CATEGORIES } from "constants/categories";
+import { Activity, Group, User } from "@prisma/client";
 import { FunctionComponent } from "react";
 
-type ActivityCardProps = {
-    activity: Activity;
+type DetailedActivity = Activity & {
+    user: User;
+    group: Group;
 };
 
-export const ActivityCard: FunctionComponent<ActivityCardProps> = ({
-    activity,
-}) => {
-    const { title, amount, type, isSplit } = activity;
+type DetailedActivityCardProps = {
+    activity: DetailedActivity;
+};
 
-    const categoryName = CATEGORIES.find(
-        (category) => category.id === activity.categoryId
-    )?.name;
+export const DetailedActivityCard: FunctionComponent<
+    DetailedActivityCardProps
+> = ({ activity }) => {
+    const { title, amount, type, categoryId, user, group } = activity;
 
     return (
         <div className="flex items-center justify-between rounded-sm bg-black px-4 py-3 dark:bg-white">
             <div className="flex w-full items-center justify-between">
                 <div>
                     <p className="font-medium">{title}</p>
-                    <p className="text-sm">{categoryName}</p>
+                    <p className="text-sm">Created by {user.name}</p>
+                    <p className="text-sm">{group.name}</p>
                 </div>
                 <p
                     className={`text-lg font-medium text-gray-900 ${
