@@ -8,6 +8,7 @@ import { StyledField } from "components/common/StyledField/StyledField";
 import { Label } from "components/common/Label/Label";
 import useSWR from "swr";
 import { Group } from "@prisma/client";
+import { CATEGORIES } from "constants/categories";
 
 type Expense = any;
 
@@ -25,6 +26,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
         title: "",
         amount: "",
         group: groups?.[0]?.id ?? "",
+        category: "",
     };
 
     const validationSchema = Yup.object({
@@ -43,6 +45,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
                 ...values,
                 userId: session?.user.id,
                 groupId: values.group,
+                categoryId: values.category,
             });
             setSubmitting(false);
         } catch (error) {
@@ -83,9 +86,23 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
                     <div>
                         <Label htmlFor="group">Group</Label>
                         <StyledField as="select" id="group" name="group">
-                            {groups?.map((group ) => (
+                            {groups?.map((group) => (
                                 <option key={group.id} value={group.id}>
                                     {group.name}
+                                </option>
+                            ))}
+                        </StyledField>
+                    </div>
+
+                    <div>
+                        <Label htmlFor="category">Category</Label>
+                        <StyledField as="select" id="category" name="category">
+                            <option value="" disabled>
+                                Select a category
+                            </option>
+                            {CATEGORIES.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                    {category.name}
                                 </option>
                             ))}
                         </StyledField>
