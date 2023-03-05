@@ -1,19 +1,14 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
-import LoginButton from "../components/auth/LoginButton";
-import useSWR from "swr";
-import { useSession } from "next-auth/react";
-import type { Group } from "@prisma/client";
-import { Header } from "components/common/header/Header";
+import { getSession, useSession } from "next-auth/react";
+import { GetServerSideProps } from "next";
+import { NextRouter } from "next/router";
+import Image from "next/image";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
     const { data: session } = useSession();
-
-    const { data: groups } = useSWR<Group[]>(
-        session?.user?.id && `/api/groups/${session?.user?.id}`
-    );
 
     return (
         <>
@@ -29,8 +24,42 @@ export default function Home() {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Header heading="Dashboard" showBack={false} />
-            <LoginButton />
+            <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                    <span className="text-black dark:text-white">
+                        Hi {session?.user?.name} 👋
+                    </span>
+                    <h1 className="text-3xl text-black dark:text-white">
+                        Manage your finances
+                    </h1>
+                </div>
+                <div className="relative h-10 w-10 overflow-hidden rounded-full">
+                    <Image
+                        src={session?.user.image || ""}
+                        alt={session?.user.name || ""}
+                        fill
+                    />
+                </div>
+            </div>
         </>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    // Check if user session is available
+    const session = await getSession(context);
+    const route = context.resolvedUrl as unknown as NextRouter;
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: `/login`,
+                permanent: false,
+            },
+        };
+    }
+
+    return {
+        props: {},
+    };
+};

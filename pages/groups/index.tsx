@@ -17,7 +17,7 @@ const Groups: FunctionComponent = ({}) => {
     return (
         <div className="flex flex-col gap-6">
             <Header heading="Groups" showBack={false}>
-                <div className="ml-auto bg-black rounded-full w-8 h-8 flex items-center justify-center absolute right-4 hover:bg-gray-500 transition-all">
+                <div className="absolute right-4 ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-black transition-all hover:bg-gray-500">
                     <Link href="/groups/create">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +25,7 @@ const Groups: FunctionComponent = ({}) => {
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6 stroke-white"
+                            className="h-6 w-6 stroke-white"
                         >
                             <path
                                 strokeLinecap="round"
@@ -36,13 +36,11 @@ const Groups: FunctionComponent = ({}) => {
                     </Link>
                 </div>
             </Header>
-            {/* <CaptionedSection caption="invites">
-                <div className="flex gap-4"></div>
-            </CaptionedSection> */}
+
             <CaptionedSection
                 caption="your groups"
                 captionChildren={
-                    <span className="ml-auto font-bold text-sm">
+                    <span className="ml-auto text-sm font-bold dark:text-gray-100">
                         {groups?.length}
                     </span>
                 }

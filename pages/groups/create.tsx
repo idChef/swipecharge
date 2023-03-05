@@ -20,8 +20,6 @@ const Create: FunctionComponent<CreateProps> = ({}) => {
                     email: "",
                 }}
                 onSubmit={async (values, { resetForm }) => {
-                    await new Promise((r) => setTimeout(r, 500));
-
                     try {
                         const response = await fetch("/api/groups/create", {
                             method: "POST",
@@ -36,7 +34,6 @@ const Create: FunctionComponent<CreateProps> = ({}) => {
 
                         if (response.ok) {
                             const data = await response.json();
-                            console.log("Group created:", data);
                             router.push(`/groups/${data.id}`);
                         } else {
                             console.error(
@@ -47,33 +44,34 @@ const Create: FunctionComponent<CreateProps> = ({}) => {
                     } catch (error) {
                         console.error("Error creating group:", error);
                     }
-
-                    resetForm();
                 }}
             >
-                <Form className="mt-4">
-                    <div>
-                        <label
-                            htmlFor="groupName"
-                            className="block mb-2 text-sm font-medium text-gray-900"
-                        >
-                            Group name
-                        </label>
-                        <Field
-                            id="groupName"
-                            className="bg-gray-50 border border-black text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            name="groupName"
-                            placeholder=""
-                        />
-                    </div>
+                {({ isSubmitting }) => (
+                    <Form className="mt-4">
+                        <div>
+                            <label
+                                htmlFor="groupName"
+                                className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                            >
+                                Group name
+                            </label>
+                            <Field
+                                id="groupName"
+                                className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-black bg-gray-50 p-2.5 text-gray-900 sm:text-sm"
+                                name="groupName"
+                                placeholder=""
+                            />
+                        </div>
 
-                    <button
-                        className="w-full mt-2 text-white bg-black hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                        type="submit"
-                    >
-                        Submit
-                    </button>
-                </Form>
+                        <button
+                            className="hover:bg-primary-700 focus:ring-primary-300 mt-2 w-full rounded-lg bg-black px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4 disabled:bg-gray-500"
+                            type="submit"
+                            disabled={isSubmitting}
+                        >
+                            Submit
+                        </button>
+                    </Form>
+                )}
             </Formik>
         </div>
     );

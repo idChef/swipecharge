@@ -15,8 +15,6 @@ export default async function handler(
 
     const inviteLink = nanoid(); // generate a unique invite link
 
-    console.log(inviteLink);
-
     try {
         const group = await client.group.create({
             data: {

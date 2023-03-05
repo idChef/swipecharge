@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -49,6 +49,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   groups        UsersOnGroups[]
+  expenses      Activity[]
 }
 
 model VerificationToken {
@@ -75,4 +76,36 @@ model Group {
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
   inviteLink String          @unique
+  Activity   Activity[]
 }
+
+enum ActivityType {
+  income
+  expense
+}
+
+model Activity {
+  id     String       @id @default(cuid())
+  title  String
+  amount Float
+  type   ActivityType
+
+  // categoryId String
+  userId    String
+  createdAt DateTime @default(now())
+  groupId   String
+
+  group Group @relation(fields: [groupId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+  // category Category? @relation(fields: [categoryId], references: [id])
+}
+
+// Category model (optional)
+// model Category {
+//   id        String    @id @default(cuid())
+//   name      String
+//   color     String
+//   expenses  Activity[]
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+// }

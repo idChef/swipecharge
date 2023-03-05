@@ -1,4 +1,6 @@
-import { Group, User } from "@prisma/client";
+import { Activity, Group, User, UsersOnGroups } from "@prisma/client";
+import { ActivityCard } from "components/activity/ActivityCard";
+import { CaptionedSection } from "components/common/captionedSection/CaptionedSection";
 import { Header } from "components/common/header/Header";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -9,13 +11,20 @@ import { copyToClipboard } from "utils/clipboard";
 
 type GroupProps = {};
 
-type GroupAndUsers = Group & { users?: User[] };
+type GroupWithExpenseAndUsers = Group & {
+    Activity: Activity[];
+    users: (UsersOnGroups & {
+        user: User;
+    })[];
+};
 
 const Group: FunctionComponent<GroupProps> = ({}) => {
     const router = useRouter();
     const { groupId } = router.query;
     const { data: session } = useSession();
-    const { data: group } = useSWR<GroupAndUsers>(`/api/group/${groupId}`);
+    const { data: group } = useSWR<GroupWithExpenseAndUsers>(
+        `/api/group/${groupId}`
+    );
 
     if (!group) {
         return null;
@@ -66,7 +75,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="w-6 h-6"
+                        className="h-6 w-6"
                     >
                         <path
                             strokeLinecap="round"
@@ -80,13 +89,13 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
             <button
                 type="button"
                 onClick={handleCopyInviteLink}
-                className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2"
+                className="mr-2 inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    className="w-6 h-6"
+                    className="h-6 w-6"
                 >
                     <path d="M7.5 3.375c0-1.036.84-1.875 1.875-1.875h.375a3.75 3.75 0 013.75 3.75v1.875C13.5 8.161 14.34 9 15.375 9h1.875A3.75 3.75 0 0121 12.75v3.375C21 17.16 20.16 18 19.125 18h-9.75A1.875 1.875 0 017.5 16.125V3.375z" />
                     <path d="M15 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0017.25 7.5h-1.875A.375.375 0 0115 7.125V5.25zM4.875 6H6v10.125A3.375 3.375 0 009.375 19.5H16.5v1.125c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 013 20.625V7.875C3 6.839 3.84 6 4.875 6z" />
@@ -96,9 +105,9 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
 
             <div className="flex">
                 {group.users &&
-                    group.users.map((user) => (
+                    group.users.map(({ user }) => (
                         <div
-                            className="relative rounded-full overflow-hidden w-16 h-16"
+                            className="relative h-16 w-16 overflow-hidden rounded-full"
                             key={user.id}
                         >
                             <Image
@@ -109,6 +118,15 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                         </div>
                     ))}
             </div>
+            <div className="my-4 border-t border-gray-400"></div>
+            <CaptionedSection caption="Activity">
+                <div className="mt-4 flex flex-col gap-2">
+                    {group.Activity &&
+                        group.Activity.map((activity) => (
+                            <ActivityCard key={activity.id} activity={activity} />
+                        ))}
+                </div>
+            </CaptionedSection>
         </>
     );
 };

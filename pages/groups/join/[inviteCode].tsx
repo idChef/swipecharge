@@ -73,7 +73,6 @@ const Join: FunctionComponent<joinProps> = ({}) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    // Check if user session is available
     const session = await getSession(context);
     const route = context.resolvedUrl as unknown as NextRouter;
 
