@@ -20,6 +20,13 @@ export default async function handler(
                     },
                 },
                 isSplit: true,
+                group: {
+                    users: {
+                        some: {
+                            userId,
+                        },
+                    },
+                },
             },
             include: {
                 group: true,
