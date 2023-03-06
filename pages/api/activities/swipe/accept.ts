@@ -29,8 +29,14 @@ export default async function handler(
             return res.status(400).json({ error: "No activity of this id." });
         }
 
+        const peopleParticipatingInBill = activity?.Bill.filter(
+            (bill) => bill.hasParticipated
+        );
+
         const peopleInActivityBill =
-            activity?.Bill.length === 0 ? 1 : activity?.Bill.length;
+            peopleParticipatingInBill.length === 0
+                ? 1
+                : peopleParticipatingInBill.length + 1;
 
         const amountPerPerson = activity.amount / peopleInActivityBill;
 

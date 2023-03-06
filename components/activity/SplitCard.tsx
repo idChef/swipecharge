@@ -15,6 +15,10 @@ export const SplitCard: FunctionComponent<SplitCardProps> = ({ activity }) => {
 
     const { data: session } = useSession();
 
+    if (!userBill) {
+        return null;
+    }
+
     return (
         <div className="flex items-center justify-between rounded-sm bg-black px-4 py-3 dark:bg-white">
             <div className="flex w-full items-center justify-between">
@@ -34,7 +38,9 @@ export const SplitCard: FunctionComponent<SplitCardProps> = ({ activity }) => {
                 </div>
 
                 {userBill.hasParticipated ? (
-                    <span className="text-red-500 font-medium">You owe {userBill.amount}</span>
+                    <span className="font-medium text-red-500">
+                        You owe {userBill.amount}
+                    </span>
                 ) : (
                     <span>Not involved</span>
                 )}
