@@ -59,7 +59,7 @@ const Profile: NextPage = () => {
             <div className="mt-20">
                 <h2 className="text-lg dark:text-white">Setup BLIK payments</h2>
                 <span className="text-neutral-300">
-                    Set up your BLIK number to receive payments from other
+                    Set up your BLIK phone number to receive payments from other
                     users.
                 </span>
                 <Formik
@@ -70,7 +70,7 @@ const Profile: NextPage = () => {
                     {({ isSubmitting }) => (
                         <Form>
                             <div className="mt-4">
-                                <Label htmlFor="blik">BLIK Number</Label>
+                                <Label htmlFor="blik">BLIK Phone Number</Label>
                                 <StyledField type="tel" id="blik" name="blik" />
                             </div>
                             <Button type="submit" disabled={isSubmitting}>
