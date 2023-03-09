@@ -18,6 +18,7 @@ export default async function handler(
     try {
         await client.bill.create({
             data: {
+                amount: 0,
                 activity: {
                     connect: {
                         id: activityId,

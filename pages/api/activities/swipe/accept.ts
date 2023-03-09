@@ -60,6 +60,7 @@ export default async function handler(
         await client.bill.updateMany({
             where: {
                 activityId,
+                hasParticipated: true,
             },
             data: {
                 amount: amountPerPerson,
