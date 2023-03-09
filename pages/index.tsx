@@ -7,6 +7,7 @@ import Image from "next/image";
 import useSWR from "swr";
 import { Skeleton } from "components/common/Skeleton/Skeleton";
 import Link from "next/link";
+import { BudgetInput } from "components/Budget";
 
 const inter = Inter({ subsets: ["latin"] });
 

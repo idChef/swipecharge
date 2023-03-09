@@ -1,7 +1,9 @@
+import { Icon } from "@iconify/react";
 import { Header } from "components/common/header/Header";
 import { Tabs } from "components/common/Tabs/Tabs";
 import { ActivityTab } from "components/groups/ActivityTab";
 import { SplitTab } from "components/groups/SplitTab";
+import { CATEGORIES } from "constants/categories";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -99,7 +101,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                 <button
                     type="button"
                     onClick={handleCopyInviteLink}
-                    className="inline-flex gap-1 items-center rounded-lg bg-blue-700 px-4 py-2 text-center text-xs font-medium text-white hover:bg-blue-800"
+                    className="inline-flex items-center gap-1 rounded-lg bg-blue-700 px-4 py-2 text-center text-xs font-medium text-white hover:bg-blue-800"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -112,6 +114,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                     </svg>
                     Copy invite link
                 </button>
+
                 <div className="flex -space-x-2">
                     {group.users &&
                         group.users.map(({ user }) => (
@@ -126,6 +129,25 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                                 />
                             </div>
                         ))}
+                </div>
+            </div>
+
+            <div className="mb-4">
+                <h2 className="dark: text-white mb-4">Budgets</h2>
+                <div className="flex gap-1 aspect-square w-48 flex-col items-center justify-center rounded-md bg-black/25 p-4 ring-2 ring-black">
+                    <div className="rounded-full bg-white/20 ring-black ring-2 p-3 text-white ">
+                        <Icon
+                            icon={CATEGORIES[1].icon}
+                            width={24}
+                            color="current"
+                        />
+                    </div>
+                    <span className="font-semibold text-white">
+                        {CATEGORIES[1].name}
+                    </span>
+                    <span className="text-center text-sm text-neutral-300">
+                        200 PLN z 500 PLN wydane
+                    </span>
                 </div>
             </div>
 
