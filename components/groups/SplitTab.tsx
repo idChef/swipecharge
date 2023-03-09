@@ -15,8 +15,6 @@ export const SplitTab: FunctionComponent<SplitTabProps> = ({}) => {
         `/api/group/${groupId}/split?userId=${session?.user?.id}`
     );
 
-    console.log(session?.user?.id);
-
     console.log(group);
 
     if (!group) {

@@ -58,13 +58,13 @@ const Join: FunctionComponent<joinProps> = ({}) => {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center">
-            <span>
+        <div className="flex h-full flex-col items-center justify-center">
+            <h2 className="text-xl text-black dark:text-white">
                 You were invited to join <strong>{group?.name}</strong>
-            </span>
+            </h2>
             <button
                 onClick={handleGroupJoin}
-                className="hover:bg-primary-700 focus:ring-primary-300 mt-2 rounded-lg bg-black px-8 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4"
+                className="hover:bg-primary-700 focus:ring-primary-300 mt-2 rounded-lg bg-black px-8 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4 dark:bg-white dark:text-black"
             >
                 Join
             </button>

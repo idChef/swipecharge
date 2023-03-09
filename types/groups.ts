@@ -10,6 +10,7 @@ export type GroupWithExpenseAndUsers = Group & {
 export type ActivityWithBill = Activity & {
     Bill: Bill[];
     user: User;
+    currentUserBill?: Bill;
 };
 
 export type GroupWithActivityAndBill = Group & {

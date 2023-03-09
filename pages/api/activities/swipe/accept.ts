@@ -57,6 +57,15 @@ export default async function handler(
             },
         });
 
+        await client.bill.updateMany({
+            where: {
+                activityId,
+            },
+            data: {
+                amount: amountPerPerson,
+            },
+        });
+
         return res.status(200).json({ message: "Bill accepted." });
     } catch (error) {
         console.error(error);

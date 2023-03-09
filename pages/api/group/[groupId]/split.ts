@@ -25,11 +25,7 @@ export default async function handler(
                     createdAt: "desc",
                 },
                 include: {
-                    Bill: {
-                        where: {
-                            userId: userId,
-                        },
-                    },
+                    Bill: true,
                     user: true,
                 },
                 where: {
@@ -44,5 +40,18 @@ export default async function handler(
         },
     });
 
-    res.status(200).json(result);
+    if (!result) {
+        return res.status(404).json({ error: "No activity of this id." });
+    }
+
+    const updatedResult = { ...result };
+
+    updatedResult.Activity = updatedResult.Activity.map((activity) => {
+        const currentUserBill = activity.Bill.find(
+            (bill) => bill.userId === userId
+        );
+        return { ...activity, currentUserBill };
+    });
+
+    res.status(200).json(updatedResult);
 }
