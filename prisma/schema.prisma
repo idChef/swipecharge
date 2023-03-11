@@ -52,6 +52,7 @@ model User {
   groups        UsersOnGroups[]
   expenses      Activity[]
   Bill          Bill[]
+  Budget        Budget[]
 }
 
 model VerificationToken {
@@ -79,6 +80,7 @@ model Group {
   updatedAt  DateTime        @updatedAt
   inviteLink String          @unique
   Activity   Activity[]
+  Budget     Budget[]
 }
 
 enum ActivityType {
@@ -116,4 +118,24 @@ model Bill {
 
   activity Activity @relation(fields: [activityId], references: [id])
   user     User     @relation(fields: [userId], references: [id])
+}
+
+model Budget {
+  id           String              @id @default(cuid())
+  userId       String
+  groupId      String
+  month        DateTime
+  restrictions BudgetRestriction[]
+
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
+}
+
+model BudgetRestriction {
+  id         String @id @default(cuid())
+  budgetId   String
+  categoryId String
+  amount     Float
+
+  budget Budget @relation(fields: [budgetId], references: [id])
 }
