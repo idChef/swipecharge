@@ -92,11 +92,12 @@ model Activity {
   amount Float
   type   ActivityType
 
-  userId     String
-  createdAt  DateTime @default(now())
-  groupId    String
-  categoryId String?
-  isSplit    Boolean  @default(false)
+  userId      String
+  createdAt   DateTime @default(now())
+  groupId     String
+  categoryId  String?
+  isSplit     Boolean  @default(false)
+  isRepeating Boolean  @default(false)
 
   group Group  @relation(fields: [groupId], references: [id])
   user  User   @relation(fields: [userId], references: [id])

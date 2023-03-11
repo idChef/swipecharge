@@ -8,6 +8,7 @@ import { Label } from "components/common/Label/Label";
 import useSWR from "swr";
 import { Group } from "@prisma/client";
 import { CATEGORIES } from "constants/categories";
+import { enqueueSnackbar } from "notistack";
 
 type Expense = any;
 
@@ -23,8 +24,10 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
     const initialValues: Expense = {
         title: "",
         amount: "",
+        type: "",
         group: groups?.[0]?.id ?? "",
         category: "",
+        repeat: false,
         split: true,
     };
 
@@ -48,8 +51,11 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
                 groupId: values.group,
                 categoryId: values.category,
                 isSplit: values.split,
+                type: values.type,
+                isRepeating: values.repeat,
             });
 
+            enqueueSnackbar(`${values.type} added sucessfully`);
             resetForm();
         } catch (error) {
             console.error(error);
@@ -97,28 +103,58 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
                     </div>
 
                     <div>
-                        <Label htmlFor="category">Category</Label>
-                        <StyledField as="select" id="category" name="category">
-                            <option value="" disabled>
-                                Select a category
-                            </option>
-                            {CATEGORIES.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.name}
-                                </option>
-                            ))}
+                        <Label htmlFor="type">Type</Label>
+                        <StyledField as="select" id="type" name="type">
+                            <option value="expense">Expense</option>
+                            <option value="income">Income</option>
                         </StyledField>
                     </div>
+
+                    {values.type === "expense" && (
+                        <>
+                            <div>
+                                <Label htmlFor="category">Category</Label>
+                                <StyledField
+                                    as="select"
+                                    id="category"
+                                    name="category"
+                                >
+                                    <option value="" disabled>
+                                        Select a category
+                                    </option>
+                                    {CATEGORIES.map((category) => (
+                                        <option
+                                            key={category.id}
+                                            value={category.id}
+                                        >
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </StyledField>
+                            </div>
+                            <label className="relative inline-flex cursor-pointer items-center">
+                                <Field
+                                    type="checkbox"
+                                    name="split"
+                                    className="peer sr-only"
+                                />
+                                <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
+                                <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                    Split this expense?
+                                </span>
+                            </label>
+                        </>
+                    )}
 
                     <label className="relative inline-flex cursor-pointer items-center">
                         <Field
                             type="checkbox"
-                            name="split"
+                            name="repeat"
                             className="peer sr-only"
                         />
                         <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
                         <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                            Split this expense?
+                            Is repeating monthly?
                         </span>
                     </label>
 
