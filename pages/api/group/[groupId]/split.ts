@@ -30,6 +30,7 @@ export default async function handler(
                 },
                 where: {
                     isSplit: true,
+                    type: "expense",
                 },
             },
             users: {

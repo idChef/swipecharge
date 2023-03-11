@@ -7,7 +7,7 @@ type AddProps = {};
 export const Add: FunctionComponent<AddProps> = ({}) => {
     return (
         <>
-        <Header heading="Add expense"  />
+        <Header heading="Add activity"  />
         <CreateExpenseForm/>
         </>
     );

@@ -8,21 +8,32 @@ type CreateExpenseRequest = {
     groupId: string;
     categoryId: string;
     isSplit: boolean;
+    type: "expense" | "income";
+    isRepeating: boolean;
 };
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { title, amount, userId, groupId, categoryId, isSplit } =
-        req.body as CreateExpenseRequest;
+    const {
+        title,
+        amount,
+        userId,
+        groupId,
+        categoryId,
+        isSplit,
+        type,
+        isRepeating,
+    } = req.body as CreateExpenseRequest;
 
     try {
-        const expense = await client.activity.create({
+        const activity = await client.activity.create({
             data: {
                 title,
                 amount: +amount,
-                type: "expense",
+                type,
+                isRepeating,
                 categoryId,
                 isSplit: isSplit,
                 group: {
@@ -38,7 +49,7 @@ export default async function handler(
             },
         });
 
-        return res.status(200).json(expense);
+        return res.status(200).json(activity);
     } catch (error) {
         console.error(error);
         return res.status(500).send("Internal Server Error");
