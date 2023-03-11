@@ -22,20 +22,29 @@ export const ActivityCard: FunctionComponent<ActivityCardProps> = ({
             <div className="flex w-full items-center justify-between">
                 <div className="flex items-center gap-4">
                     <div className="rounded-full bg-white/20 p-3 text-white ring-2 ring-black ">
-                        {category?.icon ? (
-                            <Icon
-                                icon={category?.icon}
-                                width={24}
-                                color="current"
-                            />
+                        {type === "expense" ? (
+                            <>
+                                {category?.icon ? (
+                                    <Icon
+                                        icon={category?.icon}
+                                        width={24}
+                                        color="current"
+                                    />
+                                ) : (
+                                    <Icon
+                                        icon="icon-park-solid:bill"
+                                        width={24}
+                                    />
+                                )}
+                            </>
                         ) : (
-                            <Icon icon="icon-park-solid:bill" width={24} />
+                            <Icon icon="ph:trend-up-bold" width={24} />
                         )}
                     </div>
                     <div>
                         <p className="font-semibold text-neutral-50">{title}</p>
                         <p className="text-sm text-neutral-300">
-                            {category?.name ?? "none"} -{" "}
+                            {category ? `${category?.name} - ` : null}
                             <span className="text-[12px] text-neutral-300">
                                 {formatDateTime(createdAt)}
                             </span>
