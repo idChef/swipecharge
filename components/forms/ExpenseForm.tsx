@@ -24,7 +24,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
     const initialValues: Expense = {
         title: "",
         amount: "",
-        type: "",
+        type: "expense",
         group: groups?.[0]?.id ?? "",
         category: "",
         repeat: false,

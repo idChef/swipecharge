@@ -33,9 +33,12 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
     const router = useRouter();
     const { groupId } = router.query;
     const { data: session } = useSession();
+    const { data: balance } = useSWR(`/api/group/${groupId}/balance`);
     const { data: group } = useSWR<GroupWithExpenseAndUsers>(
         `/api/group/${groupId}/activity`
     );
+
+    console.log(balance);
 
     if (!group) {
         return null;
@@ -133,21 +136,68 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
             </div>
 
             <div className="mb-4">
-                <h2 className="dark: text-white mb-4">Budgets</h2>
-                <div className="flex gap-1 aspect-square w-48 flex-col items-center justify-center rounded-md bg-black/25 p-4 ring-2 ring-black">
-                    <div className="rounded-full bg-white/20 ring-black ring-2 p-3 text-white ">
-                        <Icon
-                            icon={CATEGORIES[1].icon}
-                            width={24}
-                            color="current"
-                        />
+                <h2 className="dark: mb-4 text-white">Budgets</h2>
+                <div className="flex gap-4">
+                    <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
+                        <div className="rounded-full bg-white/20 p-3 text-white ring-2 ring-black ">
+                            <Icon
+                                icon={CATEGORIES[1].icon}
+                                width={24}
+                                color="current"
+                            />
+                        </div>
+                        <span className="font-semibold text-white">
+                            {CATEGORIES[1].name}
+                        </span>
+                        <span className="text-center text-sm text-neutral-300">
+                            200 PLN z 500 PLN wydane
+                        </span>
                     </div>
-                    <span className="font-semibold text-white">
-                        {CATEGORIES[1].name}
-                    </span>
-                    <span className="text-center text-sm text-neutral-300">
-                        200 PLN z 500 PLN wydane
-                    </span>
+                    <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
+                        <div className="rounded-full bg-white/20 p-3 text-white ring-2 ring-black ">
+                            <Icon
+                                icon="fa-solid:money-bill-wave"
+                                width={24}
+                                color="current"
+                            />
+                        </div>
+                        <span className="font-semibold text-white">
+                            Balance
+                        </span>
+                        <span className="text-center text-sm text-neutral-300">
+                            {balance.currentBalance} PLN
+                        </span>
+                    </div>
+                    <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
+                        <div className="rounded-full bg-white/20 p-3 text-white ring-2 ring-black ">
+                            <Icon
+                                icon="ph:trend-up-bold"
+                                width={24}
+                                color="current"
+                            />
+                        </div>
+                        <span className="font-semibold text-white">
+                            Income
+                        </span>
+                        <span className="text-center text-sm text-neutral-300">
+                            {balance.incomeThisMonth} PLN
+                        </span>
+                    </div>
+                    <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
+                        <div className="rounded-full bg-white/20 p-3 text-white ring-2 ring-black ">
+                            <Icon
+                                icon="ph:trend-down-bold"
+                                width={24}
+                                color="current"
+                            />
+                        </div>
+                        <span className="font-semibold text-white">
+                            Spending
+                        </span>
+                        <span className="text-center text-sm text-neutral-300">
+                            {balance.spendingsThisMonth} PLN
+                        </span>
+                    </div>
                 </div>
             </div>
 
