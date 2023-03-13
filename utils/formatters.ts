@@ -17,5 +17,5 @@ export function formatDateTime(date: Date | string) {
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
 
-    return `${year}-${formattedMonth}-${formattedDay} - ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+    return `${year}-${formattedMonth}-${formattedDay}`;
 }

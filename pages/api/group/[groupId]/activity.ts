@@ -18,7 +18,7 @@ export default async function handler(
         include: {
             Activity: {
                 orderBy: {
-                    createdAt: "desc",
+                    date: "desc",
                 },
             },
             users: {

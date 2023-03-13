@@ -11,7 +11,7 @@ type ActivityCardProps = {
 export const ActivityCard: FunctionComponent<ActivityCardProps> = ({
     activity,
 }) => {
-    const { title, amount, type, createdAt } = activity;
+    const { title, amount, type, date } = activity;
 
     const category = CATEGORIES.find(
         (category) => category.id === activity.categoryId
@@ -46,7 +46,7 @@ export const ActivityCard: FunctionComponent<ActivityCardProps> = ({
                         <p className="text-sm text-neutral-300">
                             {category ? `${category?.name} - ` : null}
                             <span className="text-[12px] text-neutral-300">
-                                {formatDateTime(createdAt)}
+                                {formatDateTime(date)}
                             </span>
                         </p>
                     </div>

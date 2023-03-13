@@ -5,7 +5,7 @@ type CreateExpenseRequest = {
     title: string;
     amount: number;
     userId: string;
-    date: string;
+    date: Date;
     groupId: string;
     categoryId: string;
     isSplit: boolean;

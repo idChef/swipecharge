@@ -70,14 +70,12 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
                 ...values,
                 userId: session?.user.id,
                 groupId: values.group,
-                date: values.date.startDate,
+                date: new Date(values.date.startDate),
                 categoryId: values.category,
                 isSplit: values.split,
                 type: values.type,
                 isRepeating: values.repeat,
             });
-
-            console.log(values);
 
             enqueueSnackbar(`${values.type} added sucessfully`);
             resetForm();
