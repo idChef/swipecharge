@@ -94,6 +94,7 @@ model Activity {
   amount Float
   type   ActivityType
 
+  date        DateTime @default(now())
   userId      String
   createdAt   DateTime @default(now())
   groupId     String

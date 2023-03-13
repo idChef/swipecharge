@@ -5,6 +5,7 @@ type CreateExpenseRequest = {
     title: string;
     amount: number;
     userId: string;
+    date: string;
     groupId: string;
     categoryId: string;
     isSplit: boolean;
@@ -21,6 +22,7 @@ export default async function handler(
         amount,
         userId,
         groupId,
+        date,
         categoryId,
         isSplit,
         type,
@@ -33,6 +35,7 @@ export default async function handler(
                 title,
                 amount: +amount,
                 type,
+                date,
                 isRepeating,
                 categoryId,
                 isSplit: isSplit,

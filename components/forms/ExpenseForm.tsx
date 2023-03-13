@@ -9,10 +9,30 @@ import useSWR from "swr";
 import { Group } from "@prisma/client";
 import { CATEGORIES } from "constants/categories";
 import { enqueueSnackbar } from "notistack";
+import Datepicker from "react-tailwindcss-datepicker";
 
 type Expense = any;
 
 type CreateExpenseFormProps = {};
+
+const DatePickerField = ({
+    value,
+    onChange,
+}: {
+    value: any;
+    onChange: any;
+}) => {
+    return (
+        <Datepicker
+            useRange={false}
+            asSingle
+            value={value}
+            onChange={(val) => {
+                onChange("date", val);
+            }}
+        />
+    );
+};
 
 const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
     const { data: session } = useSession();
@@ -25,6 +45,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
         title: "",
         amount: "",
         type: "expense",
+        date: { startDate: new Date(), endDate: new Date() },
         group: groups?.[0]?.id ?? "",
         category: "",
         repeat: false,
@@ -49,11 +70,14 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
                 ...values,
                 userId: session?.user.id,
                 groupId: values.group,
+                date: values.date.startDate,
                 categoryId: values.category,
                 isSplit: values.split,
                 type: values.type,
                 isRepeating: values.repeat,
             });
+
+            console.log(values);
 
             enqueueSnackbar(`${values.type} added sucessfully`);
             resetForm();
@@ -69,7 +93,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
             onSubmit={handleSubmit}
             enableReinitialize
         >
-            {({ isSubmitting, values }) => (
+            {({ isSubmitting, values, setFieldValue }) => (
                 <Form className="flex flex-col gap-4">
                     <div>
                         <Label htmlFor="title">Title</Label>
@@ -100,6 +124,14 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
                                 </option>
                             ))}
                         </StyledField>
+                    </div>
+
+                    <div>
+                        <Label htmlFor="group">Date</Label>
+                        <DatePickerField
+                            value={values.date}
+                            onChange={setFieldValue}
+                        />
                     </div>
 
                     <div>
