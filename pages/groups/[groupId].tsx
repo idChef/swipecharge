@@ -38,8 +38,6 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
         `/api/group/${groupId}/activity`
     );
 
-    console.log(balance);
-
     if (!group) {
         return null;
     }
@@ -176,9 +174,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                                 color="current"
                             />
                         </div>
-                        <span className="font-semibold text-white">
-                            Income
-                        </span>
+                        <span className="font-semibold text-white">Income</span>
                         <span className="text-center text-sm text-neutral-300">
                             {balance.incomeThisMonth} PLN
                         </span>
