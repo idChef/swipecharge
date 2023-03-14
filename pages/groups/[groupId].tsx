@@ -119,11 +119,11 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                         group.users.map(({ user }) => (
                             <div
                                 className="relative h-12 w-12 overflow-hidden rounded-full ring-2 ring-white dark:ring-neutral-900"
-                                key={user.id}
+                                key={user?.id}
                             >
                                 <Image
-                                    src={user.image || ""}
-                                    alt={user.name || ""}
+                                    src={user?.image || ""}
+                                    alt={user?.name || ""}
                                     fill
                                 />
                             </div>

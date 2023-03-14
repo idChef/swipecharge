@@ -15,6 +15,13 @@ export default async function handler(
         where: {
             id: groupId,
         },
+        include: {
+            users: {
+                include: {
+                    user: true,
+                },
+            },
+        },
     });
 
     res.status(200).json(result);
