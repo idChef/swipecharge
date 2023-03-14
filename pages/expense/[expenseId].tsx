@@ -61,7 +61,11 @@ const Expense: NextPage = () => {
                 ))}
             </div>
             <div className="mt-4 flex gap-4">
-                <Button>Edit</Button>
+                <Button
+                    onClick={() => router.push(`/expense/edit/${expenseId}`)}
+                >
+                    Edit
+                </Button>
                 <Button>Delete</Button>
             </div>
         </div>

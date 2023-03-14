@@ -10,10 +10,28 @@ import { Group } from "@prisma/client";
 import { CATEGORIES } from "constants/categories";
 import { enqueueSnackbar } from "notistack";
 import Datepicker from "react-tailwindcss-datepicker";
+import { validateAndFixCustomInitialValues } from "./utilts";
+import { useRouter } from "next/router";
 
-type Expense = any;
+export type Expense = {
+    title: string;
+    amount: number | null;
+    type: "expense" | "income";
+    date: {
+        startDate: Date;
+        endDate: Date;
+    };
+    group: string;
+    category: string;
+    repeat: boolean;
+    split: boolean;
+};
 
-type CreateExpenseFormProps = {};
+type CreateExpenseFormProps = {
+    formType?: "create" | "edit";
+    customInitialValues?: Expense;
+    expenseId?: string;
+};
 
 const DatePickerField = ({
     value,
@@ -34,16 +52,24 @@ const DatePickerField = ({
     );
 };
 
-const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
+const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({
+    customInitialValues,
+    formType = "create",
+    expenseId,
+}) => {
+    const router = useRouter();
     const { data: session } = useSession();
 
     const { data: groups } = useSWR<Group[]>(
         session?.user?.id && `/api/groups/${session?.user?.id}`
     );
 
-    const initialValues: Expense = {
+    const fixedCustomInitialValues =
+        validateAndFixCustomInitialValues(customInitialValues);
+
+    const initialValues: Expense = fixedCustomInitialValues ?? {
         title: "",
-        amount: "",
+        amount: null,
         type: "expense",
         date: { startDate: new Date(), endDate: new Date() },
         group: groups?.[0]?.id ?? "",
@@ -66,19 +92,30 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = () => {
         }
 
         try {
-            await axios.post("/api/expenses", {
-                ...values,
-                userId: session?.user.id,
-                groupId: values.group,
-                date: new Date(values.date.startDate),
-                categoryId: values.category,
-                isSplit: values.split,
-                type: values.type,
-                isRepeating: values.repeat,
-            });
+            await axios[formType === "create" ? "post" : "put"](
+                formType === "create"
+                    ? "/api/expenses"
+                    : `/api/expenses/${expenseId}`,
+                {
+                    ...values,
+                    userId: session?.user.id,
+                    groupId: values.group,
+                    date: new Date(values.date.startDate),
+                    categoryId: values.category,
+                    isSplit: values.split,
+                    type: values.type,
+                    isRepeating: values.repeat,
+                }
+            );
+            enqueueSnackbar(
+                `${values.type} ${
+                    formType === "create" ? "added" : "updated"
+                } successfully`
+            );
 
-            enqueueSnackbar(`${values.type} added sucessfully`);
-            resetForm();
+            formType === "create"
+                ? resetForm()
+                : router.push(`/expense/${expenseId}`);
         } catch (error) {
             console.error(error);
         }
