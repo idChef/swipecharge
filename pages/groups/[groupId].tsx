@@ -7,9 +7,9 @@ import { CATEGORIES } from "constants/categories";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent } from "react";
 import useSWR, { mutate } from "swr";
-import { GroupWithExpenseAndUsers } from "types/groups";
+import { GroupWithUsers } from "types/groups";
 import { copyToClipboard } from "utils/clipboard";
 
 type GroupProps = {};
@@ -34,11 +34,9 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
     const { groupId } = router.query;
     const { data: session } = useSession();
     const { data: balance } = useSWR(`/api/group/${groupId}/balance`);
-    const { data: group } = useSWR<GroupWithExpenseAndUsers>(
-        `/api/group/${groupId}/activity`
-    );
+    const { data: group } = useSWR<GroupWithUsers>(`/api/group/${groupId}`);
 
-    if (!group) {
+    if (!group && !balance) {
         return null;
     }
 
@@ -69,14 +67,14 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
     }
 
     const handleCopyInviteLink = () => {
-        const inviteLink = `${window.location.protocol}//${window.location.host}/groups/join/${group.inviteLink}`;
+        const inviteLink = `${window.location.protocol}//${window.location.host}/groups/join/${group?.inviteLink}`;
 
         copyToClipboard(inviteLink);
     };
 
     return (
         <>
-            <Header heading={group.name}>
+            <Header heading={group?.name || ""}>
                 <button
                     onClick={() => deleteGroupById(groupId as string)}
                     className="absolute right-4"
@@ -117,7 +115,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                 </button>
 
                 <div className="flex -space-x-2">
-                    {group.users &&
+                    {group?.users &&
                         group.users.map(({ user }) => (
                             <div
                                 className="relative h-12 w-12 overflow-hidden rounded-full ring-2 ring-white dark:ring-neutral-900"
@@ -163,7 +161,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                             Balance
                         </span>
                         <span className="text-center text-sm text-neutral-300">
-                            {balance.currentBalance} PLN
+                            {balance?.currentBalance} PLN
                         </span>
                     </div>
                     <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
@@ -176,7 +174,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                         </div>
                         <span className="font-semibold text-white">Income</span>
                         <span className="text-center text-sm text-neutral-300">
-                            {balance.incomeThisMonth} PLN
+                            {balance?.incomeThisMonth} PLN
                         </span>
                     </div>
                     <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
@@ -191,7 +189,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                             Spending
                         </span>
                         <span className="text-center text-sm text-neutral-300">
-                            {balance.spendingsThisMonth} PLN
+                            {balance?.spendingsThisMonth} PLN
                         </span>
                     </div>
                 </div>

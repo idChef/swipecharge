@@ -13,6 +13,12 @@ export type ActivityWithBill = Activity & {
     currentUserBill?: Bill;
 };
 
+export type GroupWithUsers = Group & {
+    users: (UsersOnGroups & {
+        user: User;
+    })[];
+};
+
 export type GroupWithActivityAndBill = Group & {
     Activity: ActivityWithBill[];
 };
