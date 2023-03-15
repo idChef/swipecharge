@@ -41,18 +41,20 @@ model Session {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  name          String?
-  email         String?         @unique
-  emailVerified DateTime?
-  image         String?
-  blikNumber    String?
-  accounts      Account[]
-  sessions      Session[]
-  groups        UsersOnGroups[]
-  expenses      Activity[]
-  Bill          Bill[]
-  Budget        Budget[]
+  id                  String          @id @default(cuid())
+  name                String?
+  email               String?         @unique
+  emailVerified       DateTime?
+  image               String?
+  blikNumber          String?
+  accounts            Account[]
+  sessions            Session[]
+  groups              UsersOnGroups[]
+  expenses            Activity[]
+  Bill                Bill[]
+  Budget              Budget[]
+  sentSettlements     Settlement[]    @relation("Payer")
+  receivedSettlements Settlement[]    @relation("Payee")
 }
 
 model VerificationToken {
@@ -81,6 +83,7 @@ model Group {
   inviteLink String          @unique
   Activity   Activity[]
   Budget     Budget[]
+  Settlement Settlement[]
 }
 
 enum ActivityType {
@@ -139,4 +142,18 @@ model BudgetRestriction {
   amount     Float
 
   budget Budget @relation(fields: [budgetId], references: [id])
+}
+
+model Settlement {
+  id        String   @id @default(cuid())
+  payerId   String
+  payeeId   String
+  amount    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  groupId   String
+
+  payer User  @relation("Payer", fields: [payerId], references: [id], onDelete: Cascade)
+  payee User  @relation("Payee", fields: [payeeId], references: [id], onDelete: Cascade)
+  group Group @relation(fields: [groupId], references: [id])
 }
