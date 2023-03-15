@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import { Header } from "components/common/header/Header";
 import { Tabs } from "components/common/Tabs/Tabs";
 import { ActivityTab } from "components/groups/ActivityTab";
+import { SettlementTab } from "components/groups/SettlementTab";
 import { SplitTab } from "components/groups/SplitTab";
 import { CATEGORIES } from "constants/categories";
 import { useSession } from "next-auth/react";
@@ -11,6 +12,7 @@ import { FunctionComponent } from "react";
 import useSWR, { mutate } from "swr";
 import { GroupWithUsers } from "types/groups";
 import { copyToClipboard } from "utils/clipboard";
+import { amountFormatter } from "utils/formatters";
 
 type GroupProps = {};
 
@@ -25,7 +27,7 @@ const groupTabs = [
     },
     {
         name: "Settlements",
-        component: <div className="dark:text-white">Not yet implemented</div>,
+        component: <SettlementTab />,
     },
 ];
 
@@ -161,7 +163,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                             Balance
                         </span>
                         <span className="text-center text-sm text-neutral-300">
-                            {balance?.currentBalance} PLN
+                            {amountFormatter(balance?.currentBalance)} PLN
                         </span>
                     </div>
                     <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
@@ -174,7 +176,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                         </div>
                         <span className="font-semibold text-white">Income</span>
                         <span className="text-center text-sm text-neutral-300">
-                            {balance?.incomeThisMonth} PLN
+                            {amountFormatter(balance?.incomeThisMonth)} PLN
                         </span>
                     </div>
                     <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
@@ -189,7 +191,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                             Spending
                         </span>
                         <span className="text-center text-sm text-neutral-300">
-                            {balance?.spendingsThisMonth} PLN
+                            {amountFormatter(balance?.spendingsThisMonth)} PLN
                         </span>
                     </div>
                 </div>

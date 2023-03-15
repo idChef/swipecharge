@@ -41,7 +41,7 @@ export const Navigation: FunctionComponent = ({}) => {
     const router = useRouter();
 
     return (
-        <div className="fixed bottom-0 left-0 flex h-24 w-full items-center justify-center gap-6 border-t px-4  drop-shadow-sm dark:bg-black dark:border-t-0">
+        <div className="fixed bottom-0 left-0 flex h-24 w-full items-center justify-center gap-6 border-t px-4  drop-shadow-sm dark:bg-black dark:border-t-0 z-10">
             {ROUTES.map(({ path, icon, name }) => (
                 <Link
                     key={name}

@@ -25,8 +25,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             break;
 
         case "GET":
+            const { groupId: queryGroupId } = req.query;
             try {
-                const settlements = await client.settlement.findMany();
+                const settlements = await client.settlement.findMany({
+                    where: { groupId: queryGroupId as string },
+                    include: {
+                        payer: true,
+                        payee: true,
+                    },
+                });
                 res.status(200).json(settlements);
             } catch (error) {
                 res.status(500).json({ message: error });
