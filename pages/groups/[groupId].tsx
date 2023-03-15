@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import { Header } from "components/common/header/Header";
 import { Tabs } from "components/common/Tabs/Tabs";
 import { ActivityTab } from "components/groups/ActivityTab";
+import { DebtTab } from "components/groups/DebtTab";
 import { SettlementTab } from "components/groups/SettlementTab";
 import { SplitTab } from "components/groups/SplitTab";
 import { CATEGORIES } from "constants/categories";
@@ -28,6 +29,10 @@ const groupTabs = [
     {
         name: "Settlements",
         component: <SettlementTab />,
+    },
+    {
+        name: "Debts",
+        component: <DebtTab />,
     },
 ];
 

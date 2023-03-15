@@ -22,22 +22,20 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         include: { Bill: true },
     });
 
-    const balances: {
-        [key: string]: {
-            user: User;
-            owes: number;
-            owed: number;
-        };
-    } = {};
+    const userBalances: {
+        user: User;
+        owes: number;
+        owed: number;
+    }[] = [];
 
-    // Initialize the balances object for all group users, excluding the current user
+    // Initialize the userBalances array for all group users, excluding the current user
     groupUsers.forEach((groupUser) => {
         if (groupUser.userId !== userId) {
-            balances[groupUser.userId] = {
+            userBalances.push({
                 user: groupUser.user,
                 owes: 0,
                 owed: 0,
-            };
+            });
         }
     });
 
@@ -50,7 +48,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         if (payerId === userId) {
             billsToPay.forEach((bill) => {
                 if (bill.userId !== userId) {
-                    balances[bill.userId].owed += bill.amount || 0;
+                    const balance = userBalances.find(
+                        (balance) => balance.user.id === bill.userId
+                    );
+                    if (balance) {
+                        balance.owed += bill.amount || 0;
+                    }
                 }
             });
         } else {
@@ -58,12 +61,21 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                 (bill) => bill.userId === userId
             );
             if (currentUserBill) {
-                balances[payerId].owes += currentUserBill.amount || 0;
+                const balance = userBalances.find(
+                    (balance) => balance.user.id === payerId
+                );
+                if (balance) {
+                    balance.owes += currentUserBill.amount || 0;
+                }
             }
         }
     });
 
-    res.status(200).json(balances);
+    const filteredUserBalances = userBalances.filter(
+        (balance) => balance.owes > 0 || balance.owed > 0
+    );
+
+    res.status(200).json(filteredUserBalances);
 }
 
 export default handler;

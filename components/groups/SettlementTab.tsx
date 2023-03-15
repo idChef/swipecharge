@@ -18,15 +18,9 @@ export const SettlementTab: FunctionComponent<SettlementTabProps> = ({}) => {
     const router = useRouter();
     const { groupId } = router.query;
 
-    const { data: session } = useSession();
-    const { data } = useSWR(
-        `/api/balance?userId=${session?.user?.id}&groupId=${groupId}`
-    );
     const { data: settlements, isLoading } = useSWR<SettlementWithUsers[]>(
         `/api/settlement?groupId=${groupId}`
     );
-
-    console.log(settlements);
 
     if (isLoading) {
         return <div>Loading...</div>;
