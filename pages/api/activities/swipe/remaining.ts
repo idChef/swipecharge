@@ -14,6 +14,7 @@ export default async function handler(
     try {
         const activities = await client.activity.findMany({
             where: {
+                type: "expense",
                 Bill: {
                     none: {
                         userId,
