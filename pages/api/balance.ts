@@ -24,8 +24,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const userBalances: {
         user: User;
-        owes: number;
-        owed: number;
+        netBalance: number;
     }[] = [];
 
     // Initialize the userBalances array for all group users, excluding the current user
@@ -33,8 +32,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         if (groupUser.userId !== userId) {
             userBalances.push({
                 user: groupUser.user,
-                owes: 0,
-                owed: 0,
+                netBalance: 0,
             });
         }
     });
@@ -52,7 +50,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                         (balance) => balance.user.id === bill.userId
                     );
                     if (balance) {
-                        balance.owed += bill.amount || 0;
+                        balance.netBalance += bill.amount || 0;
                     }
                 }
             });
@@ -65,14 +63,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                     (balance) => balance.user.id === payerId
                 );
                 if (balance) {
-                    balance.owes += currentUserBill.amount || 0;
+                    balance.netBalance -= currentUserBill.amount || 0;
                 }
             }
         }
     });
 
     const filteredUserBalances = userBalances.filter(
-        (balance) => balance.owes > 0 || balance.owed > 0
+        (balance) => balance.netBalance !== 0
     );
 
     res.status(200).json(filteredUserBalances);

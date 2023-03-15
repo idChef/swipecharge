@@ -1,5 +1,6 @@
 import { User } from "@prisma/client";
 import { Avatar } from "components/common/Avatar/Avatar";
+import { Button } from "components/common/Button/Button";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FunctionComponent } from "react";
@@ -10,8 +11,7 @@ type DebtTabProps = {};
 
 type balance = {
     user: User;
-    owes: number;
-    owed: number;
+    netBalance: number;
 };
 
 export const DebtTab: FunctionComponent<DebtTabProps> = ({}) => {
@@ -43,20 +43,40 @@ export const DebtTab: FunctionComponent<DebtTabProps> = ({}) => {
                         <Avatar imgSrc={balanceItem.user.image || ""} />
                         <p>{balanceItem.user.name}</p>
                     </div>
-                    {balanceItem.owed > 0 && (
-                        <div className="flex flex-col items-center justify-center">
-                            <p className="text-center">
-                                Owes you {amountFormatter(balanceItem.owed)} PLN
-                            </p>
-                        </div>
-                    )}
-                    {balanceItem.owes > 0 && (
-                        <div className="flex flex-col items-center justify-center">
-                            <p className="text-center">
-                                You owe {amountFormatter(balanceItem.owes)} PLN
-                            </p>
-                        </div>
-                    )}
+                    <div className="flex flex-col items-center justify-center gap-2">
+                        {balanceItem.netBalance > 0 ? (
+                            <div className="flex flex-col items-center justify-center">
+                                <p className="text-center">
+                                    Owes you{" "}
+                                    {amountFormatter(balanceItem.netBalance)}{" "}
+                                    PLN
+                                </p>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="flex flex-col items-center justify-center">
+                                    <p className="text-center">
+                                        You owe{" "}
+                                        {amountFormatter(
+                                            Math.abs(balanceItem.netBalance)
+                                        )}{" "}
+                                        PLN
+                                    </p>
+                                </div>
+                                <Button
+                                    className="rounded bg-white px-2 py-1 text-black disabled:bg-white/50 disabled:text-black/70"
+                                    disabled={!balanceItem.user.blikNumber}
+                                    onClick={() =>
+                                        router.push(
+                                            `/debt/settle/${balanceItem.user.id}?groupId=${groupId}`
+                                        )
+                                    }
+                                >
+                                    Settle debt
+                                </Button>
+                            </>
+                        )}
+                    </div>
                 </div>
             ))}
         </div>
