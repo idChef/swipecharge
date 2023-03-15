@@ -40,6 +40,9 @@ export default async function handler(
 
     const result = await client.activity.findMany({
         where: filters,
+        orderBy: {
+            date: "desc",
+        },
     });
 
     res.status(200).json(result);
