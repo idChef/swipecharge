@@ -22,6 +22,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         include: { Bill: true },
     });
 
+    const groupSettlements = await prisma.settlement.findMany({
+        where: { groupId: groupId as string },
+    });
+
     const userBalances: {
         user: User;
         netBalance: number;
@@ -65,6 +69,24 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                 if (balance) {
                     balance.netBalance -= currentUserBill.amount || 0;
                 }
+            }
+        }
+    });
+
+    groupSettlements.forEach((settlement) => {
+        if (settlement.payerId === userId) {
+            const balance = userBalances.find(
+                (balance) => balance.user.id === settlement.payeeId
+            );
+            if (balance) {
+                balance.netBalance += settlement.amount || 0;
+            }
+        } else if (settlement.payeeId === userId) {
+            const balance = userBalances.find(
+                (balance) => balance.user.id === settlement.payerId
+            );
+            if (balance) {
+                balance.netBalance -= settlement.amount || 0;
             }
         }
     });

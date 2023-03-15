@@ -1,16 +1,14 @@
-// pages/api/netOwedByTargetUser.ts
+// pages/api/user-balance.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { userId, groupId, targetUserId } = req.query;
+    const { userId, targetUserId, groupId } = req.query;
 
-    if (!userId || !groupId || !targetUserId) {
-        res.status(400).json({
-            error: "User ID, Group ID, and Target User ID are required",
-        });
+    if (!userId || !targetUserId || !groupId) {
+        res.status(400).json({ error: "User ID, Target User ID, and Group ID are required" });
         return;
     }
 
@@ -19,36 +17,44 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         include: { Bill: true },
     });
 
-    let amountOwedByTarget = 0;
-    let amountOwedToTarget = 0;
+    const groupSettlements = await prisma.settlement.findMany({
+        where: { groupId: groupId as string },
+    });
+
+    let netBalance = 0;
 
     groupActivities.forEach((activity) => {
-        if (activity.userId === userId) {
-            const targetUserBill = activity.Bill.find(
-                (bill) =>
-                    bill.userId === targetUserId &&
-                    bill.hasParticipated &&
-                    !bill.isPaid
+        const payerId = activity.userId;
+        const billsToPay = activity.Bill.filter(
+            (bill) => bill.hasParticipated && !bill.isPaid
+        );
+
+        if (payerId === userId) {
+            const targetUserBill = billsToPay.find(
+                (bill) => bill.userId === targetUserId
             );
             if (targetUserBill) {
-                amountOwedByTarget += targetUserBill.amount || 0;
+                netBalance += targetUserBill.amount || 0;
             }
-        } else if (activity.userId === targetUserId) {
-            const currentUserBill = activity.Bill.find(
-                (bill) =>
-                    bill.userId === userId &&
-                    bill.hasParticipated &&
-                    !bill.isPaid
+        } else if (payerId === targetUserId) {
+            const currentUserBill = billsToPay.find(
+                (bill) => bill.userId === userId
             );
             if (currentUserBill) {
-                amountOwedToTarget += currentUserBill.amount || 0;
+                netBalance -= currentUserBill.amount || 0;
             }
         }
     });
 
-    const amountOwed = amountOwedByTarget - amountOwedToTarget;
+    groupSettlements.forEach((settlement) => {
+        if (settlement.payerId === userId && settlement.payeeId === targetUserId) {
+            netBalance += settlement.amount || 0;
+        } else if (settlement.payerId === targetUserId && settlement.payeeId === userId) {
+            netBalance -= settlement.amount || 0;
+        }
+    });
 
-    res.status(200).json({ amountOwed });
+    res.status(200).json({ amountOwed: netBalance });
 }
 
 export default handler;
