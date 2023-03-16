@@ -71,14 +71,14 @@ const SpendingsPieChart: React.FC<SpendingsPieChartProps> = ({ data }) => {
 
     return (
         <div className="flex items-center">
-            <ResponsiveContainer width="50%" height={300}>
-                <PieChart width={400} height={400}>
+            <ResponsiveContainer width="40%" height={300}>
+                <PieChart height={400}>
                     <Pie
                         data={basePieChartData}
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        outerRadius={100}
+                        outerRadius={70}
                         fill="#8884d8"
                         dataKey="value"
                     >
