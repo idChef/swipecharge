@@ -33,6 +33,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         payer: true,
                         payee: true,
                     },
+                    orderBy: {
+                        createdAt: "desc",
+                    },
                 });
                 res.status(200).json(settlements);
             } catch (error) {

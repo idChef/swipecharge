@@ -21,6 +21,10 @@ export default async function handler(
                 where: {
                     groupId: groupId,
                 },
+                include: {
+                    restrictions: true,
+                    user: true,
+                },
             });
 
             res.status(200).json(budgets);

@@ -1,4 +1,3 @@
-import { Group } from "@prisma/client";
 import { CaptionedSection } from "components/common/captionedSection/CaptionedSection";
 import { Header } from "components/common/header/Header";
 import { GroupCard } from "components/groups/groupCard/GroupCard";
@@ -6,11 +5,12 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { FunctionComponent } from "react";
 import useSWR from "swr";
+import { GroupWithUsers } from "types/groups";
 
 const Groups: FunctionComponent = ({}) => {
     const { data: session } = useSession();
 
-    const { data: groups } = useSWR<Group[]>(
+    const { data: groups } = useSWR<GroupWithUsers[]>(
         session?.user?.id && `/api/groups/${session?.user?.id}`
     );
 
@@ -48,7 +48,7 @@ const Groups: FunctionComponent = ({}) => {
                 <div className="flex flex-col gap-4">
                     {groups?.map((group) => (
                         <Link key={group.id} href={`groups/${group.id}`}>
-                            <GroupCard name={group.name} />
+                            <GroupCard group={group} />
                         </Link>
                     ))}
                 </div>

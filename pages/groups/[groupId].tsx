@@ -150,9 +150,11 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                                 />
                             </div>
                         ))}
-                    <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-neutral-700 text-white ring-2 ring-white dark:ring-neutral-900">
-                        +{restOfTheUsers?.length}
-                    </div>
+                    {restOfTheUsers && restOfTheUsers?.length > 0 && (
+                        <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-neutral-700 text-white ring-2 ring-white dark:ring-neutral-900">
+                            +{restOfTheUsers?.length}
+                        </div>
+                    )}
                 </div>
             </div>
 
