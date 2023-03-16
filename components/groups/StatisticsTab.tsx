@@ -77,8 +77,10 @@ export const StatisticsTab: FunctionComponent<StatisticsTabProps> = ({}) => {
                     </span>
                 </span>
             </div>
-            <h1 className="pt-4 text-xl text-white">Spendings by categories</h1>
-            <SpendingsPieChart data={categoriesData} />
+            <div className="bg-black/80 rounded-md mt-4 p-2">
+                <h1 className="text-xl text-white">Spendings by categories</h1>
+                <SpendingsPieChart data={categoriesData} />
+            </div>
         </div>
     );
 };

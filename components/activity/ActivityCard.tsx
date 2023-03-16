@@ -18,7 +18,7 @@ export const ActivityCard: FunctionComponent<ActivityCardProps> = ({
     );
 
     return (
-        <div className="flex items-center justify-between rounded-sm bg-black px-4 py-3  ring-2 ring-black dark:bg-black/25">
+        <div className="flex items-center justify-between rounded-sm bg-black px-4 py-3  ring-2 ring-black dark:bg-black/80">
             <div className="flex w-full items-center justify-between">
                 <div className="flex items-center gap-4">
                     <div className="rounded-full bg-white/20 p-3 text-white ring-2 ring-black ">

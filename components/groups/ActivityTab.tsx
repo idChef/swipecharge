@@ -50,7 +50,7 @@ export const ActivityTab: FunctionComponent<ActivityTabProps> = ({}) => {
     }
 
     return (
-        <div className="mt-4 flex flex-col gap-2">
+        <div className="mt-4 flex flex-col gap-4">
             <ActivityFilterForm onSubmit={handleFilterSubmit} />
             {activity &&
                 activity.map((activity) => (
