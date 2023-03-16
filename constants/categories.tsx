@@ -1,5 +1,3 @@
-import { Icon } from "@iconify/react";
-
 export const CATEGORIES = [
     {
         id: "food",

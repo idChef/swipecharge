@@ -5,6 +5,7 @@ import { ActivityTab } from "components/groups/ActivityTab";
 import { DebtTab } from "components/groups/DebtTab";
 import { SettlementTab } from "components/groups/SettlementTab";
 import { SplitTab } from "components/groups/SplitTab";
+import { StatisticsTab } from "components/groups/StatisticsTab";
 import { CATEGORIES } from "constants/categories";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -33,6 +34,10 @@ const groupTabs = [
     {
         name: "Debts",
         component: <DebtTab />,
+    },
+    {
+        name: "Statistics",
+        component: <StatisticsTab />,
     },
 ];
 
