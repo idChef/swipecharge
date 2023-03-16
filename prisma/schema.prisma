@@ -128,7 +128,7 @@ model Budget {
   id           String              @id @default(cuid())
   userId       String
   groupId      String
-  month        DateTime
+  yearAndMonth DateTime
   restrictions BudgetRestriction[]
 
   user  User  @relation(fields: [userId], references: [id])

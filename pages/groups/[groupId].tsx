@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import { Header } from "components/common/header/Header";
 import { Tabs } from "components/common/Tabs/Tabs";
 import { ActivityTab } from "components/groups/ActivityTab";
+import { BudgetTab } from "components/groups/BudgetTab";
 import { DebtTab } from "components/groups/DebtTab";
 import { SettlementTab } from "components/groups/SettlementTab";
 import { SplitTab } from "components/groups/SplitTab";
@@ -38,6 +39,10 @@ const groupTabs = [
     {
         name: "Statistics",
         component: <StatisticsTab />,
+    },
+    {
+        name: "Budget",
+        component: <BudgetTab />,
     },
 ];
 
@@ -145,14 +150,16 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                                 />
                             </div>
                         ))}
-                    <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full ring-2 ring-white dark:ring-neutral-900 bg-neutral-700 text-white">
+                    <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-neutral-700 text-white ring-2 ring-white dark:ring-neutral-900">
                         +{restOfTheUsers?.length}
                     </div>
                 </div>
             </div>
 
             <div className="mb-4">
-                <h2 className="dark: mb-4 text-white mt-4">Overall money flow</h2>
+                <h2 className="dark: mb-4 mt-4 text-white">
+                    Overall money flow
+                </h2>
                 <div className="grid grid-cols-3 gap-6">
                     <div className="flex aspect-square  flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
                         <div className="rounded-full bg-white/20 p-3 text-white ring-2 ring-black ">

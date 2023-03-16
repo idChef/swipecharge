@@ -1,4 +1,3 @@
-import { CATEGORIES } from "constants/categories";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { FunctionComponent } from "react";
@@ -32,7 +31,7 @@ export const SplitCard: FunctionComponent<SplitCardProps> = ({ activity }) => {
 
     return (
         <Link href={`/expense/${activity.id}`}>
-            <div className="flex items-center justify-between rounded-sm bg-black/80 text-neutral-300 px-4 py-3 ">
+            <div className="flex items-center justify-between rounded-sm bg-black/80 px-4 py-3 text-neutral-300 ">
                 <div className="flex w-full items-center justify-between">
                     <div>
                         <p className="text-lg font-medium">{title}</p>
