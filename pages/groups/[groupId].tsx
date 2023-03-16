@@ -52,6 +52,11 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
         return null;
     }
 
+    const [pickedUsers, restOfTheUsers] = [
+        group?.users.slice(0, 5),
+        group?.users.slice(5, group?.users.length),
+    ];
+
     async function deleteGroupById(groupId: string) {
         try {
             const response = await fetch("/api/groups/delete", {
@@ -127,8 +132,8 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                 </button>
 
                 <div className="flex -space-x-2">
-                    {group?.users &&
-                        group.users.map(({ user }) => (
+                    {pickedUsers &&
+                        pickedUsers.map(({ user }) => (
                             <div
                                 className="relative h-12 w-12 overflow-hidden rounded-full ring-2 ring-white dark:ring-neutral-900"
                                 key={user?.id}
@@ -140,28 +145,16 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                                 />
                             </div>
                         ))}
+                    <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full ring-2 ring-white dark:ring-neutral-900 bg-neutral-700 text-white">
+                        +{restOfTheUsers?.length}
+                    </div>
                 </div>
             </div>
 
             <div className="mb-4">
-                <h2 className="dark: mb-4 text-white">Budgets</h2>
-                <div className="flex gap-4">
-                    <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
-                        <div className="rounded-full bg-white/20 p-3 text-white ring-2 ring-black ">
-                            <Icon
-                                icon={CATEGORIES[1].icon}
-                                width={24}
-                                color="current"
-                            />
-                        </div>
-                        <span className="font-semibold text-white">
-                            {CATEGORIES[1].name}
-                        </span>
-                        <span className="text-center text-sm text-neutral-300">
-                            200 PLN z 500 PLN wydane
-                        </span>
-                    </div>
-                    <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
+                <h2 className="dark: mb-4 text-white mt-4">Overall money flow</h2>
+                <div className="grid grid-cols-3 gap-6">
+                    <div className="flex aspect-square  flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
                         <div className="rounded-full bg-white/20 p-3 text-white ring-2 ring-black ">
                             <Icon
                                 icon="fa-solid:money-bill-wave"
@@ -176,7 +169,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                             {amountFormatter(balance?.currentBalance)} PLN
                         </span>
                     </div>
-                    <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
+                    <div className="flex aspect-square  flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
                         <div className="rounded-full bg-white/20 p-3 text-white ring-2 ring-black ">
                             <Icon
                                 icon="ph:trend-up-bold"
@@ -189,7 +182,7 @@ const Group: FunctionComponent<GroupProps> = ({}) => {
                             {amountFormatter(balance?.incomeThisMonth)} PLN
                         </span>
                     </div>
-                    <div className="flex aspect-square w-48 flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
+                    <div className="flex aspect-square  flex-col items-center justify-center gap-1 rounded-md bg-black/25 p-4 ring-2 ring-black">
                         <div className="rounded-full bg-white/20 p-3 text-white ring-2 ring-black ">
                             <Icon
                                 icon="ph:trend-down-bold"
