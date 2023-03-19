@@ -45,7 +45,10 @@ const DebtSettle: NextPage = () => {
                 amount: values.amount,
             });
 
-            enqueueSnackbar("Debt settled", { variant: "success" });
+            enqueueSnackbar(
+                `Confirmed sending ${values.amount} PLN to ${user.name} `,
+                { variant: "success" }
+            );
             router.push(`/groups/${groupId}`);
         } catch (error) {
             console.error(error);
@@ -62,13 +65,22 @@ const DebtSettle: NextPage = () => {
                 {({ errors, touched }) => (
                     <Form className="flex flex-col items-center justify-center gap-2 text-white">
                         <Avatar imgSrc={user?.image || ""} />
-                        <span>Settle your debt with {user.name}</span>
-                        <span>
-                            You owe {amountFormatter(debt.amountOwed)} PLN in
-                            total
+                        <span className="text-xl">
+                            Settle your debt with <strong>{user.name}</strong>
+                        </span>
+                        <span className="text-neutral-300">
+                            You owe{" "}
+                            <strong>
+                                {amountFormatter(debt.amountOwed)} PLN
+                            </strong>{" "}
+                            in total
+                        </span>
+                        <span className="text-neutral-300">
+                            Send the declared value as <strong>BLIK</strong> to{" "}
+                            <strong>{user.blikNumber}</strong>
                         </span>
                         <div className="mt-4 flex flex-col items-center justify-center gap-2">
-                            <Label htmlFor="amount">Amount to pay</Label>
+                            <Label htmlFor="amount">Amount to send</Label>
                             <div className="currency-input relative">
                                 <StyledField
                                     type="number"
@@ -84,7 +96,7 @@ const DebtSettle: NextPage = () => {
                                 className="text-sm text-red-500"
                             />
                         </div>
-                        <Button type="submit">Settle custom value</Button>
+                        <Button type="submit">Confirm sent amount</Button>
                     </Form>
                 )}
             </Formik>
