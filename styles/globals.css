@@ -2,10 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body{
+html,
+body {
     height: 100%;
 }
 
-#__next{
+#__next {
     height: 100%;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+@layer utilities {
+    .currency-input::after {
+        content: "PLN";
+        top: 50%;
+        transform: translateY(-50%);
+        @apply absolute right-2 text-black;
+    }
 }

@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { faker } from "@faker-js/faker";
+import client from "./prismaclient";
 
 export const CATEGORIES = [
     {
@@ -31,8 +31,6 @@ export const CATEGORIES = [
     { id: "other", name: "Other", icon: "mdi:help" },
 ];
 
-const prisma = new PrismaClient();
-
 async function main() {
     const users = [];
     const groups = [];
@@ -40,7 +38,7 @@ async function main() {
 
     // Create 10 random users
     for (let i = 0; i < 10; i++) {
-        const user = await prisma.user.create({
+        const user = await client.user.create({
             data: {
                 name: faker.name.findName(),
                 email: faker.internet.email(),
@@ -52,7 +50,7 @@ async function main() {
 
     // Create 5 random groups
     for (let i = 0; i < 5; i++) {
-        const group = await prisma.group.create({
+        const group = await client.group.create({
             data: {
                 name: faker.company.companyName(),
                 inviteLink: faker.datatype.uuid(),
@@ -68,7 +66,7 @@ async function main() {
         const categoryIndex = faker.datatype.number({ min: 0, max: 4 });
         const isSplit = faker.datatype.boolean();
 
-        const activity = await prisma.activity.create({
+        const activity = await client.activity.create({
             data: {
                 title: faker.commerce.product(),
                 amount: faker.datatype.number({
@@ -106,7 +104,7 @@ async function main() {
                 });
                 remainingAmount -= billAmount;
 
-                await prisma.bill.create({
+                await client.bill.create({
                     data: {
                         amount: billAmount,
                         isPaid: faker.datatype.boolean(),
@@ -122,7 +120,7 @@ async function main() {
                 lastBillUserIndex = faker.datatype.number({ min: 0, max: 9 });
             }
 
-            await prisma.bill.create({
+            await client.bill.create({
                 data: {
                     amount: remainingAmount,
                     isPaid: faker.datatype.boolean(),
@@ -139,7 +137,7 @@ async function main() {
     // Create UsersOnGroups
     for (let groupIndex = 0; groupIndex < groups.length; groupIndex++) {
         for (let userIndex = 0; userIndex < users.length; userIndex++) {
-            await prisma.usersOnGroups.create({
+            await client.usersOnGroups.create({
                 data: {
                     userId: users[userIndex].id,
                     groupId: groups[groupIndex].id,
@@ -160,7 +158,7 @@ async function main() {
         });
     }
 
-    await prisma.settlement.createMany({ data: settlements });
+    await client.settlement.createMany({ data: settlements });
 
     console.log("Created users:", users.length);
     console.log("Created groups:", groups.length);
@@ -174,5 +172,5 @@ main()
         process.exit(1);
     })
     .finally(async () => {
-        await prisma.$disconnect();
+        await client.$disconnect();
     });

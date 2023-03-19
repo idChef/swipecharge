@@ -6,9 +6,12 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { enqueueSnackbar } from "notistack";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 
 import useSWR from "swr";
 import { amountFormatter } from "utils/formatters";
+import { Label } from "components/common/Label/Label";
+import { StyledField } from "components/common/StyledField/StyledField";
 
 type RemainingDebt = {
     amountOwed: number;
@@ -33,13 +36,13 @@ const DebtSettle: NextPage = () => {
         return <div>Something went wrong</div>;
     }
 
-    const settleDebt = async () => {
+    const settleDebt = async (values: { amount: number }) => {
         try {
             await axios.post("/api/settlement", {
                 payerId: session?.user.id,
                 payeeId: userId,
                 groupId: groupId as string,
-                amount: debt.amountOwed,
+                amount: values.amount,
             });
 
             enqueueSnackbar("Debt settled", { variant: "success" });
@@ -51,13 +54,40 @@ const DebtSettle: NextPage = () => {
 
     return (
         <div className="flex h-full items-center justify-center">
-            <div className="flex flex-col items-center justify-center gap-2 text-white">
-                <Avatar imgSrc={user?.image || ""} />
-                <span>Settle your debt with {user.name}</span>
-                <span>You owe {amountFormatter(debt.amountOwed)} PLN</span>
-                <Button onClick={settleDebt}>Settle whole debt</Button>
-                <Button disabled>Settle custom value</Button>
-            </div>
+            <Formik
+                enableReinitialize
+                initialValues={{ amount: debt.amountOwed }}
+                onSubmit={(values) => settleDebt(values)}
+            >
+                {({ errors, touched }) => (
+                    <Form className="flex flex-col items-center justify-center gap-2 text-white">
+                        <Avatar imgSrc={user?.image || ""} />
+                        <span>Settle your debt with {user.name}</span>
+                        <span>
+                            You owe {amountFormatter(debt.amountOwed)} PLN in
+                            total
+                        </span>
+                        <div className="mt-4 flex flex-col items-center justify-center gap-2">
+                            <Label htmlFor="amount">Amount to pay</Label>
+                            <div className="currency-input relative">
+                                <StyledField
+                                    type="number"
+                                    name="amount"
+                                    step="any"
+                                    min={0}
+                                    className="currency-input relative w-full rounded-md border border-gray-500 bg-gray-100 px-3 py-2 text-black"
+                                />
+                            </div>
+                            <ErrorMessage
+                                name="amount"
+                                component="div"
+                                className="text-sm text-red-500"
+                            />
+                        </div>
+                        <Button type="submit">Settle custom value</Button>
+                    </Form>
+                )}
+            </Formik>
         </div>
     );
 };

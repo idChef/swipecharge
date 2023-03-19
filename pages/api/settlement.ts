@@ -21,6 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 res.status(201).json(newSettlement);
             } catch (error) {
                 res.status(500).json({ message: error });
+                console.log(error)
             }
             break;
 

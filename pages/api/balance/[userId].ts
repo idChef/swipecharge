@@ -1,23 +1,24 @@
 // pages/api/user-balance.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+import client from "prisma/prismaclient";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { userId, targetUserId, groupId } = req.query;
 
     if (!userId || !targetUserId || !groupId) {
-        res.status(400).json({ error: "User ID, Target User ID, and Group ID are required" });
+        res.status(400).json({
+            error: "User ID, Target User ID, and Group ID are required",
+        });
         return;
     }
 
-    const groupActivities = await prisma.activity.findMany({
+    const groupActivities = await client.activity.findMany({
         where: { groupId: groupId as string, type: "expense" },
         include: { Bill: true },
     });
 
-    const groupSettlements = await prisma.settlement.findMany({
+    const groupSettlements = await client.settlement.findMany({
         where: { groupId: groupId as string },
     });
 
@@ -47,9 +48,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     });
 
     groupSettlements.forEach((settlement) => {
-        if (settlement.payerId === userId && settlement.payeeId === targetUserId) {
+        if (
+            settlement.payerId === userId &&
+            settlement.payeeId === targetUserId
+        ) {
             netBalance += settlement.amount || 0;
-        } else if (settlement.payerId === targetUserId && settlement.payeeId === userId) {
+        } else if (
+            settlement.payerId === targetUserId &&
+            settlement.payeeId === userId
+        ) {
             netBalance -= settlement.amount || 0;
         }
     });

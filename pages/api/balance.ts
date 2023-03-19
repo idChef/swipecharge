@@ -1,8 +1,7 @@
 // pages/api/balance.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, User } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { User } from "@prisma/client";
+import client from "prisma/prismaclient";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { userId, groupId } = req.query;
@@ -12,17 +11,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         return;
     }
 
-    const groupUsers = await prisma.usersOnGroups.findMany({
+    const groupUsers = await client.usersOnGroups.findMany({
         where: { groupId: groupId as string },
         include: { user: true },
     });
 
-    const groupActivities = await prisma.activity.findMany({
+    const groupActivities = await client.activity.findMany({
         where: { groupId: groupId as string, type: "expense" },
         include: { Bill: true },
     });
 
-    const groupSettlements = await prisma.settlement.findMany({
+    const groupSettlements = await client.settlement.findMany({
         where: { groupId: groupId as string },
     });
 
