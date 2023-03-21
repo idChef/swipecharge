@@ -27,7 +27,7 @@ export const MoneySplitForm = ({
     state,
     setState,
 }: MoneySplitFormProps) => {
-    const { values, submitForm } = useFormikContext<Expense>();
+    const { values } = useFormikContext<Expense>();
     const { data: session } = useSession();
 
     const { data: selectedGroup } = useSWR<GroupWithUsers>(
@@ -63,51 +63,52 @@ export const MoneySplitForm = ({
     return (
         <div className="text-white">
             <div className="flex flex-col gap-4">
-                {splitBetween && splitBetween.map((item) => (
-                    <div key={item.id} className="flex gap-4">
-                        {item.icon}
-                        <div className="flex w-full flex-col gap-1">
-                            <div className="flex justify-between">
-                                <label htmlFor={item.id}>
-                                    {item.title} (
-                                    {limitAmount &&
-                                        (
-                                            ((state[item.id] ?? 0) /
-                                                limitAmount) *
-                                            100
-                                        ).toFixed(0)}
-                                    %)
-                                </label>
+                {splitBetween &&
+                    splitBetween.map((item) => (
+                        <div key={item.id} className="flex gap-4">
+                            {item.icon}
+                            <div className="flex w-full flex-col gap-1">
+                                <div className="flex justify-between">
+                                    <label htmlFor={item.id}>
+                                        {item.title} (
+                                        {limitAmount &&
+                                            (
+                                                ((state[item.id] ?? 0) /
+                                                    limitAmount) *
+                                                100
+                                            ).toFixed(0)}
+                                        %)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        max={limitAmount}
+                                        value={state[item.id]}
+                                        disabled={!limitAmount}
+                                        onChange={(e) =>
+                                            handleBudgetChange(
+                                                item.id,
+                                                parseFloat(e.target.value)
+                                            )
+                                        }
+                                        className="mt-1 w-20 text-black"
+                                    />
+                                </div>
                                 <input
-                                    type="number"
+                                    type="range"
                                     max={limitAmount}
-                                    value={state[item.id]}
+                                    step={0.01}
                                     disabled={!limitAmount}
+                                    value={state[item.id]}
                                     onChange={(e) =>
                                         handleBudgetChange(
                                             item.id,
                                             parseFloat(e.target.value)
                                         )
                                     }
-                                    className="mt-1 w-20 text-black"
                                 />
                             </div>
-                            <input
-                                type="range"
-                                max={limitAmount}
-                                step={0.01}
-                                disabled={!limitAmount}
-                                value={state[item.id]}
-                                onChange={(e) =>
-                                    handleBudgetChange(
-                                        item.id,
-                                        parseFloat(e.target.value)
-                                    )
-                                }
-                            />
                         </div>
-                    </div>
-                ))}
+                    ))}
             </div>
         </div>
     );

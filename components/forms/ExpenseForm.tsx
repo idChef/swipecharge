@@ -24,9 +24,6 @@ import {
     Label as LabelType,
     MoneySplitForm,
 } from "components/MoneySplitForm";
-import { Avatar } from "components/common/Avatar/Avatar";
-import { GroupWithUsers } from "types/groups";
-import { useState } from "react";
 
 export type Expense = {
     title: string;

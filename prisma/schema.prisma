@@ -118,7 +118,7 @@ model Bill {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   activityId      String
-  userId          String
+  userId          String   @unique
 
   activity Activity @relation(fields: [activityId], references: [id])
   user     User     @relation(fields: [userId], references: [id])
