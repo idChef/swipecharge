@@ -29,7 +29,6 @@ export default async function handler(
                     user: true,
                 },
                 where: {
-                    isSplit: true,
                     type: "expense",
                 },
             },

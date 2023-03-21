@@ -14,7 +14,10 @@ export const SplitTab: FunctionComponent<SplitTabProps> = ({}) => {
     const { data: group } = useSWR<GroupWithActivityAndBill>(
         `/api/group/${groupId}/split?userId=${session?.user?.id}`
     );
+    
+    console.log(group)
 
+    
     if (!group) {
         return <div>No splits yet</div>;
     }
