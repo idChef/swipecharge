@@ -1,9 +1,10 @@
+import React from "react";
 import axios from "axios";
 import { DetailedActivityCard } from "components/activity/DetailedActivityCard";
 import { Button } from "components/common/Button/Button";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-
+import TinderCard from "react-tinder-card";
 import useSWR from "swr";
 
 const Swipe: NextPage = () => {
@@ -12,19 +13,14 @@ const Swipe: NextPage = () => {
         `/api/activities/swipe/remaining?userId=${session?.user?.id}`
     );
 
-    const declineActivity = async () => {
-        await axios.post("/api/activities/swipe/decline", {
-            userId: session?.user.id,
-            activityId: data[0].id,
-        });
-        mutate();
-    };
+    const onSwipe = async (direction: string, activityId: string) => {
+        const action = direction === "left" ? "decline" : "accept";
 
-    const acceptActivity = async () => {
-        await axios.post("/api/activities/swipe/accept", {
+        await axios.post(`/api/activities/swipe/${action}`, {
             userId: session?.user.id,
-            activityId: data[0].id,
+            activityId: activityId,
         });
+
         mutate();
     };
 
@@ -33,15 +29,20 @@ const Swipe: NextPage = () => {
     }
 
     return (
-        <div className="flex h-full flex-col pb-4">
+        <div className="flex h-full flex-col justify-center items-center pb-4">
             {data.length > 0 ? (
                 <>
-                    <DetailedActivityCard activity={data[0]} />
+                    {data.map((activity) => (
+                        <TinderCard
+                            key={activity.id}
+                            onSwipe={(dir) => onSwipe(dir, activity.id)}
+                            className="absolute"
+                            preventSwipe={["up", "down"]}
+                        >
+                            <DetailedActivityCard activity={activity} />
+                        </TinderCard>
+                    ))}
 
-                    <Button onClick={() => declineActivity()}>Decline</Button>
-                    <Button primary onClick={() => acceptActivity()}>
-                        Accept
-                    </Button>
                     <span className="mt-auto text-center dark:text-white">
                         {data.length} left to swipe
                     </span>
