@@ -1,4 +1,11 @@
-import { Formik, Form, ErrorMessage, FormikHelpers, Field } from "formik";
+import {
+    Formik,
+    Form,
+    ErrorMessage,
+    FormikHelpers,
+    Field,
+    useFormikContext,
+} from "formik";
 import * as Yup from "yup";
 import { Button } from "components/common/Button/Button";
 import axios from "axios";
@@ -12,6 +19,11 @@ import { enqueueSnackbar } from "notistack";
 import Datepicker from "react-tailwindcss-datepicker";
 import { validateAndFixCustomInitialValues } from "./utilts";
 import { useRouter } from "next/router";
+import {
+    Budgets,
+    Label as LabelType,
+    MoneySplitForm,
+} from "components/MoneySplitForm";
 
 export type Expense = {
     title: string;
@@ -25,6 +37,7 @@ export type Expense = {
     category: string;
     repeat: boolean;
     split: boolean;
+    budget: Budgets;
 };
 
 type CreateExpenseFormProps = {
@@ -59,7 +72,6 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({
 }) => {
     const router = useRouter();
     const { data: session } = useSession();
-
     const { data: groups } = useSWR<Group[]>(
         session?.user?.id && `/api/groups/${session?.user?.id}`
     );
@@ -76,6 +88,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({
         category: "",
         repeat: false,
         split: true,
+        budget: {},
     };
 
     const validationSchema = Yup.object({
@@ -90,7 +103,6 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({
         if (!session?.user.id) {
             return;
         }
-
         try {
             await axios[formType === "create" ? "post" : "put"](
                 formType === "create"
@@ -105,6 +117,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({
                     isSplit: values.split,
                     type: values.type,
                     isRepeating: values.repeat,
+                    budget: !values.split && values.budget,
                 }
             );
             enqueueSnackbar(
@@ -207,9 +220,17 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({
                                 />
                                 <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
                                 <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                    Split this expense?
+                                    Split this expense evenly between all
+                                    participants
                                 </span>
                             </label>
+                            {!values.split && (
+                                <MoneySplitForm
+                                    limitAmount={values.amount || 0}
+                                    state={values.budget}
+                                    setState={setFieldValue}
+                                />
+                            )}
                         </>
                     )}
 
@@ -221,7 +242,7 @@ const CreateExpenseForm: React.FC<CreateExpenseFormProps> = ({
                         />
                         <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
                         <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                            Is repeating monthly?
+                            Repeats monthly
                         </span>
                     </label>
 

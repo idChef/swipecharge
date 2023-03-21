@@ -126,7 +126,7 @@ model Bill {
 
 model Budget {
   id           String              @id @default(cuid())
-  userId       String
+  userId       String 
   groupId      String
   yearAndMonth DateTime
   restrictions BudgetRestriction[]

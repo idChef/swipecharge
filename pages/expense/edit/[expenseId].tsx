@@ -10,6 +10,8 @@ const Edit: NextPage = () => {
 
     if (typeof expenseId !== "string") return null;
 
+    console.log(data);
+
     return (
         <div>
             <CreateExpenseForm

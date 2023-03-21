@@ -27,7 +27,49 @@ export default async function handler(
         isSplit,
         type,
         isRepeating,
-    } = req.body as CreateExpenseRequest;
+        budget,
+    } = req.body;
+
+    if (!budget) {
+        try {
+            const activity = await client.activity.create({
+                data: {
+                    title,
+                    amount: +amount,
+                    type,
+                    date,
+                    isRepeating,
+                    categoryId,
+                    isSplit: isSplit,
+                    group: {
+                        connect: {
+                            id: groupId,
+                        },
+                    },
+                    user: {
+                        connect: {
+                            id: userId,
+                        },
+                    },
+                },
+            });
+
+            return res.status(200).json(activity);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send("Internal Server Error");
+        }
+    }
+
+    const entries = Object.entries(budget);
+
+    let data = entries.map(([key, val]) => {
+        return { userId: key, amount: val, hasParticipated: true };
+    });
+
+    if (!data.some((e) => e.userId === userId)) {
+        data.push({ userId, amount: 0, hasParticipated: false });
+    }
 
     try {
         const activity = await client.activity.create({
@@ -47,6 +89,11 @@ export default async function handler(
                 user: {
                     connect: {
                         id: userId,
+                    },
+                },
+                Bill: {
+                    createMany: {
+                        data: data,
                     },
                 },
             },

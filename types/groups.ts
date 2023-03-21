@@ -7,6 +7,11 @@ export type GroupWithExpenseAndUsers = Group & {
     })[];
 };
 
+export type ActivityWithBillAndGroup = Activity & {
+    Bill: Bill[];
+    group: Group;
+};
+
 export type ActivityWithBill = Activity & {
     Bill: Bill[];
     user: User;

@@ -98,10 +98,11 @@ async function main() {
                 billUsers.push(billUserIndex);
 
                 const billAmount = faker.datatype.number({
-                    min: 1,
-                    max: remainingAmount - 1,
+                    min: 0.01,
+                    max: remainingAmount - 0.01,
                     precision: 0.01,
                 });
+
                 remainingAmount -= billAmount;
 
                 await client.bill.create({

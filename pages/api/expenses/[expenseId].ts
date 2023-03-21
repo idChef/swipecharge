@@ -11,6 +11,7 @@ type ExpenseRequest = {
     isSplit: boolean;
     type: "expense" | "income";
     isRepeating: boolean;
+    budget?: Record<string, number>;
 };
 
 export default async function handler(
@@ -26,6 +27,7 @@ export default async function handler(
         isSplit,
         type,
         isRepeating,
+        budget,
     } = req.body as ExpenseRequest;
 
     try {
@@ -36,19 +38,56 @@ export default async function handler(
                 return res.status(400).send("Bad Request: Missing expenseId");
             }
 
+            const activityData = await client.activity.findUnique({
+                where: {
+                    id: expenseId as string,
+                },
+                include: {
+                    Bill: true,
+                },
+            });
+
+            let updateData: any = {
+                title,
+                amount: +amount,
+                type,
+                date,
+                isRepeating,
+                categoryId,
+                isSplit: isSplit,
+            };
+
+            if (budget && activityData) {
+                const entries = Object.entries(budget);
+                const data = entries.map(([key, val]) => {
+                    const bill = activityData.Bill.find(
+                        (b) => b.userId === key
+                    );
+                    const billId = bill ? bill.id : undefined;
+                    return {
+                        id: billId,
+                        userId: key,
+                        amount: val,
+                        hasParticipated: true,
+                    };
+                });
+
+                updateData.Bill = {
+                    upsert: data.map((billData: any) => ({
+                        where: { id: billData.id },
+                        update: { amount: billData.amount },
+                        create: {
+                            ...billData,
+                        },
+                    })),
+                };
+            }
+
             const activity = await client.activity.update({
                 where: {
                     id: expenseId as string,
                 },
-                data: {
-                    title,
-                    amount: +amount,
-                    type,
-                    date,
-                    isRepeating,
-                    categoryId,
-                    isSplit: isSplit,
-                },
+                data: updateData,
             });
 
             return res.status(200).json(activity);
