@@ -10,6 +10,8 @@ import useSWR from "swr";
 import { getCurrentMonth, getPreviousMonth } from "utils/date";
 import { formatDateTime } from "utils/formatters";
 import { Icon } from "@iconify/react";
+import MoneyFlowChart from "components/charts/MoneyFlowChart";
+import { Label } from "components/common/Label/Label";
 
 type StatisticsTabProps = {};
 
@@ -30,9 +32,9 @@ export const StatisticsTab: FunctionComponent<StatisticsTabProps> = ({}) => {
         `/api/expenses/statistics/category?groupId=${groupId}&statsStartDate=${statsDate?.startDate}&statsEndDate=${statsDate?.endDate}&compareStartDate=${compareDate?.startDate}&compareEndDate=${compareDate?.endDate}`
     );
 
-    if (!categoriesData) {
-        return null;
-    }
+    const { data: moneyData } = useSWR(
+        `/api/expenses/statistics/moneyflow?groupId=${groupId}&statsStartDate=${statsDate?.startDate}&statsEndDate=${statsDate?.endDate}&compareStartDate=${compareDate?.startDate}&compareEndDate=${compareDate?.endDate}`
+    );
 
     return (
         <div>
@@ -40,15 +42,21 @@ export const StatisticsTab: FunctionComponent<StatisticsTabProps> = ({}) => {
             {filtersOpen && (
                 <div className="fixed top-5 left-5 right-5 z-10 rounded bg-black/95 p-4 shadow-lg">
                     <div className="flex flex-col gap-6 py-4">
-                        <Datepicker
-                            value={statsDate}
-                            onChange={(value) => setStatsDate(value)}
-                        />
-                        <Datepicker
-                            value={compareDate}
-                            startFrom={compareDate?.startDate as Date}
-                            onChange={(value) => setCompareDate(value)}
-                        />
+                        <div>
+                            <Label>Base date range</Label>
+                            <Datepicker
+                                value={statsDate}
+                                onChange={(value) => setStatsDate(value)}
+                            />
+                        </div>
+                        <div>
+                            <Label>Compare date range</Label>
+                            <Datepicker
+                                value={compareDate}
+                                startFrom={compareDate?.startDate as Date}
+                                onChange={(value) => setCompareDate(value)}
+                            />
+                        </div>
                     </div>
                     <Button onClick={() => setFiltersOpen(false)}>Close</Button>
                 </div>
@@ -56,7 +64,7 @@ export const StatisticsTab: FunctionComponent<StatisticsTabProps> = ({}) => {
             <div className="pt-2 text-neutral-400">
                 <span className="leading-2">
                     Statistics from{" "}
-                    <span className="rounded bg-black py-1 px-2 font-medium text-neutral-300 inline whitespace-nowrap">
+                    <span className="inline whitespace-nowrap rounded bg-black py-1 px-2 font-medium text-neutral-300">
                         <Icon
                             icon="mdi:calendar"
                             className="inline"
@@ -66,7 +74,7 @@ export const StatisticsTab: FunctionComponent<StatisticsTabProps> = ({}) => {
                         {formatDateTime(statsDate?.endDate as Date)}
                     </span>{" "}
                     compared to{" "}
-                    <span className="rounded bg-black py-1 px-2 font-medium text-neutral-300 inline whitespace-nowrap">
+                    <span className="inline whitespace-nowrap rounded bg-black py-1 px-2 font-medium text-neutral-300">
                         <Icon
                             icon="mdi:calendar"
                             className="inline"
@@ -77,10 +85,22 @@ export const StatisticsTab: FunctionComponent<StatisticsTabProps> = ({}) => {
                     </span>
                 </span>
             </div>
-            <div className="bg-black/80 rounded-md mt-4 p-2">
-                <h1 className="text-xl text-white">Spendings by categories</h1>
-                <SpendingsPieChart data={categoriesData} />
-            </div>
+            {categoriesData && (
+                <div className="mt-4 rounded-md bg-black/80 p-2">
+                    <h1 className="text-xl text-white">
+                        Spendings by categories
+                    </h1>
+                    <SpendingsPieChart data={categoriesData} />
+                </div>
+            )}
+            {moneyData && (
+                <div className="mt-4 rounded-md bg-black/80 p-2">
+                    <h1 className="mb-4 text-xl text-white">
+                        Income and spending
+                    </h1>
+                    <MoneyFlowChart data={moneyData} />
+                </div>
+            )}
         </div>
     );
 };
