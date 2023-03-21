@@ -1,17 +1,20 @@
 import React from "react";
 import axios from "axios";
 import { DetailedActivityCard } from "components/activity/DetailedActivityCard";
-import { Button } from "components/common/Button/Button";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import TinderCard from "react-tinder-card";
 import useSWR from "swr";
+import dynamic from "next/dynamic";
 
 const Swipe: NextPage = () => {
     const { data: session } = useSession();
     const { data, isLoading, mutate } = useSWR(
         `/api/activities/swipe/remaining?userId=${session?.user?.id}`
     );
+
+    const TinderCard = dynamic(() => import("react-tinder-card"), {
+        ssr: false,
+    });
 
     const onSwipe = async (direction: string, activityId: string) => {
         const action = direction === "left" ? "decline" : "accept";
@@ -29,7 +32,7 @@ const Swipe: NextPage = () => {
     }
 
     return (
-        <div className="flex h-full flex-col justify-center items-center pb-4">
+        <div className="flex h-full flex-col items-center justify-center pb-4">
             {data.length > 0 ? (
                 <>
                     {data.map((activity) => (
