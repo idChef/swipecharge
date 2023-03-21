@@ -118,7 +118,7 @@ model Bill {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   activityId      String
-  userId          String   @unique
+  userId          String
 
   activity Activity @relation(fields: [activityId], references: [id])
   user     User     @relation(fields: [userId], references: [id])
@@ -126,7 +126,7 @@ model Bill {
 
 model Budget {
   id           String              @id @default(cuid())
-  userId       String
+  userId       String 
   groupId      String
   yearAndMonth DateTime
   restrictions BudgetRestriction[]

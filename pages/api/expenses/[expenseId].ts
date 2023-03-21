@@ -38,6 +38,15 @@ export default async function handler(
                 return res.status(400).send("Bad Request: Missing expenseId");
             }
 
+            const activityData = await client.activity.findUnique({
+                where: {
+                    id: expenseId as string,
+                },
+                include: {
+                    Bill: true,
+                },
+            });
+
             let updateData: any = {
                 title,
                 amount: +amount,
@@ -48,15 +57,24 @@ export default async function handler(
                 isSplit: isSplit,
             };
 
-            if (budget) {
+            if (budget && activityData) {
                 const entries = Object.entries(budget);
                 const data = entries.map(([key, val]) => {
-                    return { userId: key, amount: val, hasParticipated: true };
+                    const bill = activityData.Bill.find(
+                        (b) => b.userId === key
+                    );
+                    const billId = bill ? bill.id : undefined;
+                    return {
+                        id: billId,
+                        userId: key,
+                        amount: val,
+                        hasParticipated: true,
+                    };
                 });
 
                 updateData.Bill = {
                     upsert: data.map((billData: any) => ({
-                        where: { userId: billData.userId },
+                        where: { id: billData.id },
                         update: { amount: billData.amount },
                         create: {
                             ...billData,
