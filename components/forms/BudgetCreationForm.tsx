@@ -25,10 +25,6 @@ const CreateBudgetForm: React.FC = () => {
     const { data: session } = useSession();
     const { enqueueSnackbar } = useSnackbar();
 
-    const { data: groups } = useSWR<Group[]>(
-        session?.user?.id && `/api/groups/${session?.user?.id}`
-    );
-
     const initialValues: Budget = {
         yearAndMonth: new Date(),
         restrictions: [
