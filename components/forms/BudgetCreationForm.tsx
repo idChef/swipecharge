@@ -65,6 +65,7 @@ const CreateBudgetForm: React.FC = () => {
             router.push(`/groups/${groupId}`);
         } catch (error) {
             console.error(error);
+            enqueueSnackbar("Something went wrong", { variant: "error" });
         }
     };
 
