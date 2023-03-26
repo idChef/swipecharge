@@ -1,4 +1,4 @@
-import { Formik, Form, ErrorMessage, FormikHelpers, Field } from "formik";
+import { Formik, Form, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { Button } from "components/common/Button/Button";
 import axios from "axios";
@@ -9,9 +9,9 @@ import useSWR from "swr";
 import { Group } from "@prisma/client";
 import { CATEGORIES } from "constants/categories";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 
 export type Budget = {
-    groupId: string;
     yearAndMonth: Date;
     restrictions: Array<{
         categoryId: string;
@@ -23,19 +23,23 @@ const CreateBudgetForm: React.FC = () => {
     const router = useRouter();
     const { groupId } = router.query;
     const { data: session } = useSession();
+    const { enqueueSnackbar } = useSnackbar();
 
     const { data: groups } = useSWR<Group[]>(
         session?.user?.id && `/api/groups/${session?.user?.id}`
     );
 
     const initialValues: Budget = {
-        groupId: groups?.[0]?.id ?? "",
         yearAndMonth: new Date(),
-        restrictions: [],
+        restrictions: [
+            {
+                categoryId: "",
+                amount: 0,
+            },
+        ],
     };
 
     const validationSchema = Yup.object({
-        groupId: Yup.string().required("Required"),
         yearAndMonth: Yup.date().required("Required"),
         restrictions: Yup.array().of(
             Yup.object().shape({
@@ -54,14 +58,15 @@ const CreateBudgetForm: React.FC = () => {
         try {
             await axios.post(`/api/group/${groupId}/budget`, {
                 ...values,
-                groupId: values.groupId,
+                groupId: groupId,
                 yearAndMonth: new Date(values.yearAndMonth),
                 restrictions: values.restrictions,
                 userId: session?.user.id,
             });
 
             resetForm();
-            router.push("/budgets");
+            enqueueSnackbar("Budget created", { variant: "success" });
+            router.push(`/groups/${groupId}`);
         } catch (error) {
             console.error(error);
         }
@@ -73,19 +78,8 @@ const CreateBudgetForm: React.FC = () => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
         >
-            {({ isSubmitting, values, setFieldValue }) => (
+            {({ isSubmitting, values, setFieldValue, errors }) => (
                 <Form className="flex flex-col gap-4">
-                    <div>
-                        <Label htmlFor="groupId">Group</Label>
-                        <StyledField as="select" id="groupId" name="groupId">
-                            {groups?.map((group) => (
-                                <option key={group.id} value={group.id}>
-                                    {group.name}
-                                </option>
-                            ))}
-                        </StyledField>
-                    </div>
-
                     <div>
                         <Label htmlFor="yearAndMonth">Month</Label>
                         <StyledField
@@ -132,7 +126,8 @@ const CreateBudgetForm: React.FC = () => {
                                 component="div"
                             />
                             {index > 0 && (
-                                <button
+                                <Button
+                                    color="error"
                                     type="button"
                                     onClick={() => {
                                         const newRestrictions =
@@ -145,22 +140,22 @@ const CreateBudgetForm: React.FC = () => {
                                     }}
                                 >
                                     Remove
-                                </button>
+                                </Button>
                             )}
                         </div>
                     ))}
 
-                    <button
+                    <Button
                         type="button"
                         onClick={() => {
                             setFieldValue("restrictions", [
                                 ...values.restrictions,
-                                { categoryId: "", amount: null },
+                                { categoryId: "", amount: 0 },
                             ]);
                         }}
                     >
                         Add restriction
-                    </button>
+                    </Button>
 
                     <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? "Submitting..." : "Submit"}
